@@ -1,5 +1,7 @@
-# Only needed to regenerate assets from the supplied extracted source.
+# Only needed to rebuild assets from checksum-pinned official AgileX sources.
 -r requirements.txt
 trimesh==5.2.0
 pycollada==0.9.3
-scipy>=1.11,<2
+# Toolchain used for the delivered geometry integration (recorded in manifest).
+numpy==2.5.4
+scipy==1.18.1

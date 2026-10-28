@@ -1,0 +1,97 @@
+{
+  "classification": {
+    "1": "Manufacturer-specified or explicitly CAD-derived",
+    "2": "Official URDF value, not independently validated",
+    "3": "Estimated from geometry",
+    "4": "Assumed or conditional because physical information is unavailable"
+  },
+  "scout": {
+    "kerb_mass_kg": 23.0,
+    "kerb_mass_class": 1,
+    "wheel_mass_kg": 3.0,
+    "wheel_mass_class": 2,
+    "chassis_mass_method": "kerb mass minus four official-URDF wheel masses; conditional, class 4",
+    "suspension": "locked at nominal URDF stance; no unmeasured spring/damper parameters",
+    "wheel_radius_m": 0.08,
+    "wheel_width_m": 0.084,
+    "wheel_shape_class": 3,
+    "wheel_inertia_method": "uniform solid cylinder centered on the measured tire envelope; mass is official/unvalidated",
+    "source_urdf_wheelbase_m": 0.463951,
+    "source_urdf_joint_track_m": 0.416503,
+    "source_urdf_wheel_z_m": -0.100998,
+    "placement_method": "manufacturer manual wheelbase and tire-center track; retain source URDF vertical stance; do not scale meshes"
+  },
+  "arm": {
+    "torque_profile": "standard Piper / pyAgxArm PiperFW.DEFAULT command envelope, not continuous motor rating",
+    "torque_limits_Nm": [
+      32,
+      32,
+      32,
+      6.506016,
+      6.506016,
+      6.506016
+    ],
+    "torque_limit_class": 1,
+    "gear": 1.0,
+    "gear_interpretation": "joint-side torque commands, not a physical gearbox ratio",
+    "armature_kg_m2": 0.0,
+    "armature_class": 4,
+    "damping": 0.0,
+    "frictionloss": 0.0,
+    "losses_class": 4
+  },
+  "simulation": {
+    "timestep_s": 0.001,
+    "contact_friction": [
+      1,
+      0.005,
+      0.0001
+    ],
+    "contact_friction_class": 4,
+    "joint_losses": "zero on arm, fingers, wheels and free base; no identified friction/damping available",
+    "gravity": [
+      0,
+      0,
+      -9.81
+    ],
+    "gravcomp": 0,
+    "gripper_equality_solref": [
+      0.002,
+      1
+    ],
+    "gripper_equality_solimp": [
+      0.99,
+      0.999,
+      0.001
+    ]
+  },
+  "manufacturer_cross_checks": {
+    "scout_mini": {
+      "class": 1,
+      "kerb_mass_kg": 23,
+      "nominal_dimensions_m": [
+        0.612,
+        0.58,
+        0.245
+      ],
+      "wheelbase_m": 0.451,
+      "tire_track_m": 0.49,
+      "motor_power_W_each": 250,
+      "drive_reduction_ratio": 4.3,
+      "source": "Scout Mini manual performance table, PDF page 8; kerb mass includes wheels and battery"
+    },
+    "piper": {
+      "class": 1,
+      "arm_mass_kg": 4.2,
+      "optional_gripper_mass_kg": 0.5,
+      "payload_kg": 1.5,
+      "reach_m": 0.62675,
+      "mount_hole_spacing_m": 0.07,
+      "source": "Piper manual V1.0 2025.06, PDF pages 9-10; gripper is listed separately"
+    }
+  },
+  "unknown_parameters": {
+    "scout": "individual measured wheel mass; battery and drivetrain mass split; COM and inertia; suspension spring/damper curves; tire stiffness and friction; reflected rotor inertia; brake/backdrive behavior",
+    "piper": "internal material/density distribution and independently validated COM/inertia for most links; physical gear reductions; rotor inertia; identified friction/damping; continuous torque/speed ratings; installed firmware revision"
+  }
+}

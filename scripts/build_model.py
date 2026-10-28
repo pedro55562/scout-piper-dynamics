@@ -1,27 +1,30 @@
 #!/usr/bin/env python3
-"""Offline, reproducible conversion of the supplied ROS assets; never needed to run MJCF."""
+"""Rebuild the standalone robot from checksum-pinned official AgileX inputs."""
 
 from __future__ import annotations
 
+import argparse
+import ast
+import copy
+import csv
 import hashlib
 import json
-from pathlib import Path
 import shutil
 import xml.etree.ElementTree as ET
+from importlib.metadata import version
+from pathlib import Path
 
 import collada
 import numpy as np
-from scipy.spatial.transform import Rotation
 import trimesh
-
+from arm_dynamics import configure_arm_dynamics
+from scipy.spatial.transform import Rotation
+from upstream import CACHE, ensure_sources
 
 ROOT = Path(__file__).resolve().parents[1]
-SOURCE = ROOT / "ppscout_ws-dev/src"
 OUTPUT = ROOT / "models/scout_piper"
-SCOUT = SOURCE / "third_party/scout_ros2/scout_description"
-PIPER = SOURCE / "third_party/agx_arm_urdf/piper/meshes"
-DESCRIPTION = SOURCE / "ppscout_description/urdf"
-MOUNT = np.array([0.0, 0.0, 0.054])
+SCOUT = CACHE / "scout_ros/scout_description"
+PIPER = CACHE / "agx_arm_urdf"
 HOME_ARM = [0.0, 0.7, -1.4, 0.0, 0.7, 0.0]
 
 
@@ -30,7 +33,9 @@ def numbers(values):
 
 
 def vector(element, attribute, default="0 0 0"):
-    return np.fromstring(element.get(attribute, default) if element is not None else default, sep=" ")
+    return np.fromstring(
+        element.get(attribute, default) if element is not None else default, sep=" "
+    )
 
 
 def pose(origin):
@@ -43,9 +48,13 @@ def pose(origin):
 
 def tensor(element):
     a = element.attrib
-    return np.array([[float(a["ixx"]), float(a["ixy"]), float(a["ixz"])],
-                     [float(a["ixy"]), float(a["iyy"]), float(a["iyz"])],
-                     [float(a["ixz"]), float(a["iyz"]), float(a["izz"])]])
+    return np.array(
+        [
+            [float(a["ixx"]), float(a["ixy"]), float(a["ixz"])],
+            [float(a["ixy"]), float(a["iyy"]), float(a["iyz"])],
+            [float(a["ixz"]), float(a["iyz"]), float(a["izz"])],
+        ]
+    )
 
 
 def tensor6(matrix):
@@ -73,13 +82,19 @@ def audit(mass, center, inertia, bounds):
 def write_obj(path, primitives):
     """Bake Collada scene transforms; preserve triangle winding and split normals."""
     with path.open("w") as out:
-        out.write("# Converted from supplied Collada; units: meters. See source_manifest.json.\n")
+        out.write(
+            "# Converted from pinned official AgileX Collada; meters. See source_manifest.json.\n"
+        )
         voffset = noffset = 1
         for vertices, faces, normals, normal_faces in primitives:
             np.savetxt(out, vertices, fmt="v %.9g %.9g %.9g")
             np.savetxt(out, normals, fmt="vn %.9g %.9g %.9g")
             for face, normal_face in zip(faces + voffset, normal_faces + noffset):
-                out.write("f " + " ".join(f"{v}//{n}" for v, n in zip(face, normal_face)) + "\n")
+                out.write(
+                    "f "
+                    + " ".join(f"{v}//{n}" for v, n in zip(face, normal_face))
+                    + "\n"
+                )
             voffset += len(vertices)
             noffset += len(normals)
 
@@ -99,22 +114,50 @@ def visual_assets(name, source_path, rotation, asset, manifest):
             normals = np.asarray(primitive.normal, dtype=float) @ rotation.T
             normals /= np.linalg.norm(normals, axis=1, keepdims=True)
             color = tuple(float(x) for x in primitive.material.effect.diffuse)
-            groups.setdefault(color, []).append((vertices, primitive.vertex_index, normals, primitive.normal_index))
+            groups.setdefault(color, []).append(
+                (vertices, primitive.vertex_index, normals, primitive.normal_index)
+            )
             vertices_all.append(vertices)
             if name == "wheel" and np.allclose(color[:3], [0.2941176593] * 3):
                 tire.append(vertices)
     visual_geoms = []
+    if name == "wheel":
+        measured = np.concatenate(tire)
+        radial_center = (measured.min(0) + measured.max(0)) / 2
+        shift = np.array([-radial_center[0], -radial_center[1], 0])
+        # The CAD mesh's tire is about 1 mm off the named axle. Center all its
+        # parts together; do not turn an export offset into rotating eccentricity.
+        for vertices in vertices_all:
+            vertices += shift
+        manifest["wheel_visual_correction"] = {
+            "translation_m": shift.tolist(),
+            "class": 3,
+            "method": "center the tire radial bounding box on the wheel rotation axis",
+        }
     for index, (color, primitives) in enumerate(groups.items()):
         mesh_name = f"{name}_visual_{index}"
         relative = f"assets/visual/{mesh_name}.obj"
         write_obj(OUTPUT / relative, primitives)
         ET.SubElement(asset, "mesh", name=mesh_name, file=relative, inertia="shell")
-        visual_geoms.append({"name": mesh_name, "type": "mesh", "mesh": mesh_name,
-                             "rgba": numbers(color), "class": "visual"})
-        manifest["assets"][relative] = {"source": str(source_path.relative_to(ROOT)),
-                                       "diffuse_rgba": color,
-                                       "triangles": sum(len(p[1]) for p in primitives)}
-    return visual_geoms, np.concatenate(vertices_all), np.concatenate(tire) if tire else None
+        visual_geoms.append(
+            {
+                "name": mesh_name,
+                "type": "mesh",
+                "mesh": mesh_name,
+                "rgba": numbers(color),
+                "class": "visual",
+            }
+        )
+        manifest["assets"][relative] = {
+            "source": str(source_path.relative_to(ROOT)),
+            "diffuse_rgba": color,
+            "triangles": sum(len(p[1]) for p in primitives),
+        }
+    return (
+        visual_geoms,
+        np.concatenate(vertices_all),
+        np.concatenate(tire) if tire else None,
+    )
 
 
 def roof_heights(vertices, faces, xy):
@@ -125,206 +168,697 @@ def roof_heights(vertices, faces, xy):
     det = u[:, 0] * v[:, 1] - u[:, 1] * v[:, 0]
     good = abs(det) > 1e-12
     r = xy - a
-    b = np.divide(r[:, 0] * v[:, 1] - r[:, 1] * v[:, 0], det, out=np.zeros_like(det), where=good)
-    c = np.divide(u[:, 0] * r[:, 1] - u[:, 1] * r[:, 0], det, out=np.zeros_like(det), where=good)
+    b = np.divide(
+        r[:, 0] * v[:, 1] - r[:, 1] * v[:, 0], det, out=np.zeros_like(det), where=good
+    )
+    c = np.divide(
+        u[:, 0] * r[:, 1] - u[:, 1] * r[:, 0], det, out=np.zeros_like(det), where=good
+    )
     mask = good & (b >= -1e-8) & (c >= -1e-8) & (b + c <= 1 + 1e-8)
-    z = triangles[:, 0, 2] + b * (triangles[:, 1, 2] - triangles[:, 0, 2]) + c * (triangles[:, 2, 2] - triangles[:, 0, 2])
+    z = (
+        triangles[:, 0, 2]
+        + b * (triangles[:, 1, 2] - triangles[:, 0, 2])
+        + c * (triangles[:, 2, 2] - triangles[:, 0, 2])
+    )
     return float(z[mask].max())
 
 
-def build():
-    for subdir in ["assets/visual", "assets/collision", "licenses"]:
-        (OUTPUT / subdir).mkdir(parents=True, exist_ok=True)
-    scout_path = SCOUT / "urdf/model.xacro"
-    arm_path = DESCRIPTION / "piper_description_scout.urdf"
-    gripper_path = DESCRIPTION / "piper_with_gripper_scout.xacro"
-    scout = ET.parse(scout_path).getroot()
+def source_models():
+    """Expand only the four-wheel Mini macro, without requiring ROS or Xacro."""
+    scout_path = SCOUT / "urdf/scout_mini.urdf.xacro"
+    wheel_path = SCOUT / "urdf/scout_mini_wheel.xacro"
+    source = ET.parse(scout_path).getroot()
+    wheel_macro = (
+        ET.parse(wheel_path).getroot().find("{http://ros.org/wiki/xacro}macro")
+    )
+    props = {
+        e.get("name"): float(e.get("value"))
+        for e in source.findall("{http://ros.org/wiki/xacro}property")
+    }
+    scout = ET.Element("robot", name="scout_mini")
+    base = copy.deepcopy(source.find("link[@name='base_link']"))
+    base.append(copy.deepcopy(source.find("link[@name='inertial_link']/inertial")))
+    scout.append(base)
+    # Normalize rounded +/-1.57 rotations to exact right angles. Positive rotation
+    # is forward rolling on every wheel; the left source joint coordinates flip sign.
+    for side in ["front_left", "front_right", "rear_left", "rear_right"]:
+        left = side.endswith("left")
+        front = side.startswith("front")
+        link = copy.deepcopy(wheel_macro.find("link"))
+        link.set("name", f"{side}_wheel_link")
+        scout.append(link)
+        j = ET.SubElement(scout, "joint", name=f"{side}_wheel", type="continuous")
+        ET.SubElement(j, "parent", link="base_link")
+        ET.SubElement(j, "child", link=link.get("name"))
+        ET.SubElement(
+            j,
+            "origin",
+            xyz=numbers(
+                [
+                    (1 if front else -1) * props["wheelbase"] / 2,
+                    (1 if left else -1) * props["track"] / 2,
+                    props["wheel_vertical_offset"],
+                ]
+            ),
+            rpy=numbers([-np.pi / 2 if left else np.pi / 2, 0, 0]),
+        )
+        ET.SubElement(j, "axis", xyz="0 0 1" if left else "0 0 -1")
+    arm_path = PIPER / "piper/urdf/piper_description.urdf"
+    gripper_path = PIPER / "piper/urdf/piper_with_gripper_description.xacro"
     arm = ET.parse(arm_path).getroot()
+    arm.remove(arm.find("link[@name='world']"))
+    arm.remove(arm.find("joint[@name='world_to_base_link']"))
+    arm.find("link[@name='base_link']").set("name", "piper_base_link")
+    arm.find("joint[@name='joint1']/parent").set("link", "piper_base_link")
     gripper = ET.parse(gripper_path).getroot()
-    links = {l.get("name"): (l, path) for tree, path in [(scout, scout_path), (arm, arm_path), (gripper, gripper_path)] for l in tree.findall("link")}
-    wheel_inertial = scout.find("{http://www.ros.org/wiki/xacro}macro[@name='wheel_inertial']/inertial")
-    for name in ["front_left", "front_right", "rear_left", "rear_right"]:
-        links[f"{name}_wheel_link"][0].append(ET.fromstring(ET.tostring(wheel_inertial)))
-    manifest = {"description": "Deterministic conversion of local supplied files; no source files modified.",
-                "source_files": {}, "assets": {}, "inertials": {}, "mount": {"xyz": MOUNT.tolist(), "rpy": [0, 0, 0]}}
-    root = ET.Element("mujoco", model="Scout Mini with Piper")
-    root.append(ET.Comment("Generated by scripts/build_model.py. SI units. See docs/model_notes.md."))
-    ET.SubElement(root, "compiler", angle="radian", autolimits="true", inertiafromgeom="false", fusestatic="false")
-    ET.SubElement(root, "option", timestep="0.001", gravity="0 0 -9.81", integrator="implicitfast", cone="elliptic")
+    return (
+        scout,
+        arm,
+        gripper,
+        [
+            (scout_path, "scout_mini.urdf.xacro"),
+            (wheel_path, "scout_mini_wheel.xacro"),
+            (arm_path, "piper_description.urdf"),
+            (gripper_path, "piper_with_gripper_description.xacro"),
+        ],
+    )
+
+
+def scene_triangles(path, rotation):
+    vertices, faces, offset = [], [], 0
+    for g in collada.Collada(str(path)).scene.objects("geometry"):
+        for p in g.primitives():
+            if hasattr(p, "triangleset"):
+                p = p.triangleset()
+            vertices.append(np.asarray(p.vertex) @ rotation.T)
+            faces.append(p.vertex_index + offset)
+            offset += len(p.vertex)
+    return np.concatenate(vertices), np.concatenate(faces)
+
+
+def build(fetch=False):
+    lock = ensure_sources(fetch)
+    config = json.loads((OUTPUT / "build_config.json").read_text())
+    # Read literal manufacturer SDK coefficients without executing external Python.
+    constants = ast.parse((CACHE / "pyAgxArm/pyAgxArm/api/constants.py").read_text())
+    coefficients = {
+        n.targets[0].id: ast.literal_eval(n.value)
+        for n in constants.body
+        if isinstance(n, ast.Assign)
+        and isinstance(n.targets[0], ast.Name)
+        and n.targets[0].id in ("ROBOT_JOINT_TORQUE_B", "ROBOT_JOINT_TORQUE_C")
+    }
+    sdk_limits = [
+        8 * b * c
+        for b, c in zip(
+            coefficients["ROBOT_JOINT_TORQUE_B"]["piper"],
+            coefficients["ROBOT_JOINT_TORQUE_C"]["piper"],
+        )
+    ]
+    if not np.allclose(
+        config["arm"]["torque_limits_Nm"], sdk_limits, rtol=0, atol=1e-12
+    ):
+        raise ValueError(
+            "Torque config differs from the selected standard-Piper DEFAULT SDK profile"
+        )
+    for subdir in ["assets/visual", "assets/collision", "licenses", "reference"]:
+        (OUTPUT / subdir).mkdir(parents=True, exist_ok=True)
+    scout, arm, gripper, references = source_models()
+    links = {
+        e.get("name"): e for tree in [scout, arm, gripper] for e in tree.findall("link")
+    }
+    paths = {
+        name: references[0][0]
+        if name == "base_link"
+        else references[1][0]
+        if name.endswith("_wheel_link")
+        else references[2][0]
+        if name in {e.get("name") for e in arm.findall("link")}
+        else references[3][0]
+        for name in links
+    }
+    manifest = {
+        "description": "Rebuilt from pinned official Scout Mini and standard Piper sources.",
+        "build_toolchain": {
+            name: version(name) for name in ["numpy", "scipy", "trimesh", "pycollada"]
+        },
+        "classifications": config["classification"],
+        "repositories": lock["repositories"],
+        "manuals": lock["manuals"],
+        "source_files": {},
+        "assets": {},
+        "inertials": {},
+        "kinematics": {},
+        "reference_files": {},
+        "assumptions": config,
+        "legacy_workspace": lock["legacy_workspace"],
+        "investigated_repositories": lock["investigated_repositories"],
+        "mass_summary": {"scout_kg": config["scout"]["kerb_mass_kg"]},
+    }
+    for key, repo in lock["repositories"].items():
+        for relative, digest in repo["files"].items():
+            manifest["source_files"][
+                str((CACHE / key / relative).relative_to(ROOT))
+            ] = digest
+    root = ET.Element("mujoco", model="Scout Mini with standard Piper")
+    root.append(
+        ET.Comment(
+            " Generated from pinned official sources. See docs/physical_model_report.md. "
+        )
+    )
+    ET.SubElement(
+        root,
+        "compiler",
+        angle="radian",
+        autolimits="true",
+        inertiafromgeom="false",
+        fusestatic="false",
+    )
+    ET.SubElement(
+        root,
+        "option",
+        timestep=numbers([config["simulation"]["timestep_s"]]),
+        gravity=numbers(config["simulation"]["gravity"]),
+        integrator="implicitfast",
+        cone="elliptic",
+    )
     ET.SubElement(root, "statistic", center="0 0 0.45", extent="1.3")
     visual = ET.SubElement(root, "visual")
-    ET.SubElement(visual, "global", azimuth="135", elevation="-20", offwidth="1440", offheight="1080")
+    ET.SubElement(
+        visual,
+        "global",
+        azimuth="135",
+        elevation="-20",
+        offwidth="1440",
+        offheight="1080",
+    )
     ET.SubElement(visual, "headlight", diffuse="0.6 0.6 0.6", ambient="0.3 0.3 0.3")
     default = ET.SubElement(root, "default")
-    ET.SubElement(default, "geom", friction="1 0.005 0.0001")  # MuJoCo defaults, uncalibrated.
-    vclass = ET.SubElement(default, "default", {"class": "visual"})
-    ET.SubElement(vclass, "geom", contype="0", conaffinity="0", group="2", density="0")
-    cclass = ET.SubElement(default, "default", {"class": "collision"})
-    ET.SubElement(cclass, "geom", group="3", rgba="0.2 0.7 0.3 0.3", density="0")
+    ET.SubElement(
+        default, "joint", damping="0", frictionloss="0", stiffness="0", armature="0"
+    )
+    ET.SubElement(
+        default, "geom", friction=numbers(config["simulation"]["contact_friction"])
+    )
+    for class_name, attrs in [
+        ("visual", {"contype": "0", "conaffinity": "0", "group": "2", "density": "0"}),
+        ("collision", {"group": "3", "rgba": "0.2 0.7 0.3 0.3", "density": "0"}),
+    ]:
+        ET.SubElement(
+            ET.SubElement(default, "default", {"class": class_name}), "geom", attrs
+        )
     asset = ET.SubElement(root, "asset")
     world = ET.SubElement(root, "worldbody")
-    ET.SubElement(world, "light", name="key_light", pos="0 -2 3", dir="0 0.5 -1", directional="true")
-    ET.SubElement(world, "geom", name="ground", type="plane", size="5 5 0.1", rgba="0.82 0.85 0.88 1")
-    transforms = {"base_link": Rotation.from_euler("xyz", [1.5708, 0, -1.5708]).as_matrix()}
-    mesh_files = {"base_link": SCOUT / "meshes/scout_mini_base_link2.dae", "wheel": SCOUT / "meshes/wheel.dae"}
-    for name in ["piper_base_link", *[f"link{i}" for i in range(1, 7)], "flange_link", "gripper_base", "gripper_link1", "gripper_link2"]:
-        filename = {"piper_base_link": "base_link", "flange_link": "flange"}.get(name, name)
-        mesh_files[name] = PIPER / "dae" / f"{filename}.dae"
+    ET.SubElement(
+        world,
+        "light",
+        name="key_light",
+        pos="0 -2 3",
+        dir="0 0.5 -1",
+        directional="true",
+    )
+    ET.SubElement(
+        world,
+        "geom",
+        name="ground",
+        type="plane",
+        size="5 5 0.1",
+        rgba="0.82 0.85 0.88 1",
+    )
+    rotation = Rotation.from_euler(
+        "xyz", vector(links["base_link"].find("visual/origin"), "rpy")
+    ).as_matrix()
     converted = {}
-    for name, source_path in mesh_files.items():
-        vg, vertices, tire = visual_assets(name, source_path, transforms.get(name, np.eye(3)), asset, manifest)
-        # Arm collision STLs are the supplied physical geometry; Scout has only Collada.
-        physical_path = source_path if name in ("base_link", "wheel") else PIPER / (source_path.stem + ".stl")
-        physical = vertices if physical_path == source_path else trimesh.load_mesh(physical_path).vertices
+    mesh_files = {}
+    for name in [
+        "base_link",
+        "wheel",
+        *[e.get("name") for e in arm.findall("link")],
+        "flange_link",
+        "gripper_base",
+        "gripper_link1",
+        "gripper_link2",
+    ]:
+        link = links["front_left_wheel_link"] if name == "wheel" else links[name]
+        mesh_uri = link.find("visual/geometry/mesh").get("filename")
+        if "agx_arm_urdf/" in mesh_uri:
+            source_path = PIPER / mesh_uri.split("agx_arm_urdf/")[1]
+            physical_path = (
+                PIPER
+                / link.find("collision/geometry/mesh")
+                .get("filename")
+                .split("agx_arm_urdf/")[1]
+            )
+        else:
+            source_path = SCOUT / mesh_uri.split("scout_description/")[1]
+            physical_path = source_path
+        mesh_files[name] = source_path
+        vg, vertices, tire = visual_assets(
+            name,
+            source_path,
+            rotation if name == "base_link" else np.eye(3),
+            asset,
+            manifest,
+        )
+        physical = (
+            vertices
+            if source_path == physical_path
+            else trimesh.load_mesh(physical_path).vertices
+        )
         hull = trimesh.convex.convex_hull(physical)
         if name not in ("base_link", "wheel"):
             relative = f"assets/collision/{name}_hull.stl"
             hull.export(OUTPUT / relative)
             ET.SubElement(asset, "mesh", name=f"{name}_hull", file=relative)
-            manifest["assets"][relative] = {"source": str(physical_path.relative_to(ROOT)), "operation": "convex hull", "triangles": len(hull.faces)}
+            manifest["assets"][relative] = {
+                "source": str(physical_path.relative_to(ROOT)),
+                "operation": "convex hull",
+                "triangles": len(hull.faces),
+            }
         converted[name] = (vg, vertices, tire, hull)
-        manifest["source_files"][str(physical_path.relative_to(ROOT))] = hashlib.sha256(physical_path.read_bytes()).hexdigest()
-        manifest["source_files"][str(source_path.relative_to(ROOT))] = hashlib.sha256(source_path.read_bytes()).hexdigest()
-
-    # Contact cylinder follows the tire envelope, excluding the long decorative axle/hub.
+    # Re-evaluate flush mounting against the new official chassis, including its source rotation.
+    chassis_vertices, chassis_faces = scene_triangles(mesh_files["base_link"], rotation)
+    base_bounds = converted["piper_base_link"][3].bounds
+    lo, hi = base_bounds
+    heights = [
+        roof_heights(chassis_vertices, chassis_faces, [x, y])
+        for x in np.linspace(lo[0], hi[0], 11)
+        for y in np.linspace(lo[1], hi[1], 11)
+    ]
+    triangles = chassis_vertices[chassis_faces]
+    overlaps = np.all(triangles[:, :, :2].max(1) >= lo[:2], axis=1) & np.all(
+        triangles[:, :, :2].min(1) <= hi[:2], axis=1
+    )
+    conservative_top = float(triangles[overlaps, :, 2].max())
+    mount = np.array([0, 0, np.ceil((conservative_top - lo[2]) * 1e5) / 1e5])
+    manifest["mount"] = {
+        "xyz": mount.tolist(),
+        "rpy": [0, 0, 0],
+        "class": 3,
+        "piper_base_bounds_m": base_bounds.tolist(),
+        "deck_grid": [11, 11],
+        "deck_z_range_m": [min(heights), max(heights)],
+        "conservative_deck_z_max_m": conservative_top,
+        "min_clearance_m": float(mount[2] + lo[2] - max(heights)),
+    }
     tire = converted["wheel"][2]
     tire_center = (tire.min(0) + tire.max(0)) / 2
-    tire_radius = float(np.linalg.norm(tire[:, :2] - tire_center[:2], axis=1).max())
-    tire_halfwidth = float(np.ptp(tire[:, 2]) / 2)
-    manifest["wheel_collision"] = {"pos": tire_center.tolist(), "radius": tire_radius, "halfwidth": tire_halfwidth}
-    # Raise the base just 1 mm above the lowest contact envelope at reset.
-    wheel_joints = [j for j in scout.findall("joint") if j.get("name") in [f"{side}_wheel" for side in ["front_left", "front_right", "rear_left", "rear_right"]]]
+    radius, halfwidth = (
+        config["scout"]["wheel_radius_m"],
+        config["scout"]["wheel_width_m"] / 2,
+    )
+    manifest["wheel_collision"] = {
+        "pos": tire_center.tolist(),
+        "radius": radius,
+        "halfwidth": halfwidth,
+        "class": 3,
+        "source": "official simulator cylinder dimensions; measured tire-envelope center",
+    }
+    wheel_joints = scout.findall("joint")
+    source_wheel_origins = {
+        j.get("name"): vector(j.find("origin"), "xyz").tolist() for j in wheel_joints
+    }
+    # Manufacturer drawing outranks the older axle layout. Derive axle-joint
+    # track from tire-center track and the measured axial mesh offset.
+    manual = config["manufacturer_cross_checks"]["scout_mini"]
+    for j in wheel_joints:
+        name = j.get("name")
+        original = vector(j.find("origin"), "xyz")
+        xyz = [
+            manual["wheelbase_m"] / 2 * (1 if name.startswith("front") else -1),
+            (manual["tire_track_m"] / 2 - abs(tire_center[2]))
+            * (1 if name.endswith("left_wheel") else -1),
+            original[2],
+        ]
+        j.find("origin").set("xyz", numbers(xyz))
+    assembled_vertices = [converted["base_link"][1]]
+    for j in wheel_joints:
+        R = Rotation.from_euler("xyz", vector(j.find("origin"), "rpy")).as_matrix()
+        assembled_vertices.append(
+            converted["wheel"][1] @ R.T + vector(j.find("origin"), "xyz")
+        )
+    assembled_vertices = np.concatenate(assembled_vertices)
+    manifest["scout_visual_envelope"] = {
+        "class": 3,
+        "dimensions_m": np.ptp(assembled_vertices, axis=0).tolist(),
+        "min_m": assembled_vertices.min(0).tolist(),
+        "max_m": assembled_vertices.max(0).tolist(),
+        "note": "manual in-plane wheel placement; original URDF vertical stance retained",
+    }
     bottoms = []
     for j in wheel_joints:
         R = Rotation.from_euler("xyz", vector(j.find("origin"), "rpy")).as_matrix()
         center = vector(j.find("origin"), "xyz") + R @ tire_center
         axial_z = abs(R[2, 2])
-        bottoms.append(center[2] - tire_radius * np.sqrt(1 - axial_z**2) - tire_halfwidth * axial_z)
+        bottoms.append(
+            center[2] - radius * np.sqrt(1 - axial_z**2) - halfwidth * axial_z
+        )
     base_height = float(-min(bottoms) + 0.001)
-    base = ET.SubElement(world, "body", name="base_link", pos=numbers([0, 0, base_height]))
+    base = ET.SubElement(
+        world, "body", name="base_link", pos=numbers([0, 0, base_height]), gravcomp="0"
+    )
     ET.SubElement(base, "freejoint", name="floating_base")
     bodies = {"base_link": base}
 
     def populate(name, body):
         key = "wheel" if name.endswith("_wheel_link") else name
         vg, vertices, _, hull = converted[key]
-        for attributes in vg:
-            attributes = dict(attributes)
-            attributes["name"] = f"{name}_{attributes['name']}"
-            ET.SubElement(body, "geom", attributes)
+        for attrs in vg:
+            attrs = dict(attrs)
+            attrs["name"] = name + "_" + attrs["name"]
+            ET.SubElement(body, "geom", attrs)
         if key == "wheel":
-            ET.SubElement(body, "geom", {"name": f"{name}_contact", "class": "collision", "type": "cylinder",
-                                        "pos": numbers(tire_center), "size": numbers([tire_radius, tire_halfwidth])})
+            ET.SubElement(
+                body,
+                "geom",
+                {
+                    "name": name + "_contact",
+                    "class": "collision",
+                    "type": "cylinder",
+                    "pos": numbers(tire_center),
+                    "size": numbers([radius, halfwidth]),
+                },
+            )
         elif key == "base_link":
-            lo, hi = vertices.min(0), vertices.max(0)
-            hi[2] = MOUNT[2]  # Main deck, rather than side-rail height across the arm footprint.
-            ET.SubElement(body, "geom", {"name": "chassis_contact", "class": "collision", "type": "box",
-                                        "pos": numbers((lo + hi) / 2), "size": numbers((hi - lo) / 2)})
+            low, high = vertices.min(0), vertices.max(0)
+            high[2] = mount[2]
+            ET.SubElement(
+                body,
+                "geom",
+                {
+                    "name": "chassis_contact",
+                    "class": "collision",
+                    "type": "box",
+                    "pos": numbers((low + high) / 2),
+                    "size": numbers((high - low) / 2),
+                },
+            )
         else:
-            ET.SubElement(body, "geom", {"name": f"{name}_contact", "class": "collision", "type": "mesh", "mesh": f"{name}_hull"})
-        link, source_path = links[name]
-        inertial = link.find("inertial")
-        mass = float(inertial.find("mass").get("value"))
-        center = vector(inertial.find("origin"), "xyz")
-        R = Rotation.from_euler("xyz", vector(inertial.find("origin"), "rpy")).as_matrix()
-        inertia = R @ tensor(inertial.find("inertia")) @ R.T
-        bounds = hull.bounds
-        reasons, variance, variance_limit = audit(mass, center, inertia, bounds)
-        record = {"source": str(source_path.relative_to(ROOT)), "mass_kg": mass,
-                  "source_com_m": center.tolist(), "source_tensor_kg_m2": inertia.tolist(),
-                  "mesh_bounds_m": bounds.tolist(), "source_variance_m2": variance.tolist(),
-                  "variance_bound_m2": variance_limit.tolist(), "rejection_reasons": reasons,
-                  "method": "uniform-density convex hull at source mass" if reasons else "source unchanged (tensor rotated into link frame)"}
-        if reasons:
-            # No guessed scalar inertia: integrate the supplied geometry with its stated mass.
+            ET.SubElement(
+                body,
+                "geom",
+                {
+                    "name": name + "_contact",
+                    "class": "collision",
+                    "type": "mesh",
+                    "mesh": name + "_hull",
+                },
+            )
+        ine = links[name].find("inertial")
+        source_mass = float(ine.find("mass").get("value"))
+        center = vector(ine.find("origin"), "xyz")
+        R = Rotation.from_euler("xyz", vector(ine.find("origin"), "rpy")).as_matrix()
+        inertia = R @ tensor(ine.find("inertia")) @ R.T
+        reasons, variance, bound = audit(source_mass, center, inertia, hull.bounds)
+        record = {
+            "source": str(paths[name].relative_to(ROOT)),
+            "source_mass_kg": source_mass,
+            "source_com_m": center.tolist(),
+            "source_tensor_kg_m2": inertia.tolist(),
+            "source_mesh_bounds_m": hull.bounds.tolist(),
+            "source_variance_m2": variance.tolist(),
+            "variance_bound_m2": bound.tolist(),
+            "rejection_reasons": reasons,
+            "source_mass_class": 1 if name == "link6" else 2,
+        }
+        mass = source_mass
+        if key == "base_link":
+            mass = (
+                config["scout"]["kerb_mass_kg"] - 4 * config["scout"]["wheel_mass_kg"]
+            )
+            if mass <= 0:
+                raise ValueError("Nonpositive chassis residual mass")
             center = hull.center_mass
             inertia = hull.moment_inertia * (mass / hull.mass)
-            body.append(ET.Comment(" Source inertial rejected by mesh support audit; uniform hull at original mass. "))
-        record.update({"com_m": center.tolist(), "tensor_kg_m2": inertia.tolist()})
+            record.update(
+                mass_class=4,
+                com_class=3,
+                inertia_class=3,
+                method="uniform chassis hull at kerb mass minus four official/unvalidated wheel masses",
+            )
+        elif key == "wheel":
+            mass = config["scout"]["wheel_mass_kg"]
+            center = tire_center.copy()
+            transverse = mass * (3 * radius**2 + (2 * halfwidth) ** 2) / 12
+            inertia = np.diag([transverse, transverse, mass * radius**2 / 2])
+            record.update(
+                mass_class=2,
+                com_class=3,
+                inertia_class=3,
+                method="uniform solid cylinder; mass not independently validated",
+            )
+        elif reasons:
+            center = hull.center_mass
+            inertia = hull.moment_inertia * (mass / hull.mass)
+            record.update(
+                mass_class=record["source_mass_class"],
+                com_class=3,
+                inertia_class=3,
+                method="uniform-density source collision convex hull at official mass",
+            )
+        else:
+            record.update(
+                mass_class=2,
+                com_class=2,
+                inertia_class=2,
+                method="official URDF COM and full tensor retained after necessary consistency checks",
+            )
+        support = hull.bounds.copy()
+        if key == "wheel":
+            support = np.array(
+                [
+                    center - [radius, radius, halfwidth],
+                    center + [radius, radius, halfwidth],
+                ]
+            )
+        record.update(
+            mass_kg=mass,
+            com_m=center.tolist(),
+            tensor_kg_m2=inertia.tolist(),
+            mesh_bounds_m=support.tolist(),
+        )
+        if audit(mass, center, inertia, support)[0]:
+            raise ValueError(f"Invalid final inertia: {name}")
         manifest["inertials"][name] = record
-        ET.SubElement(body, "inertial", mass=numbers([mass]), pos=numbers(center), fullinertia=numbers(tensor6(inertia)))
-
-    populate("base_link", base)
+        ET.SubElement(
+            body,
+            "inertial",
+            mass=numbers([mass]),
+            pos=numbers(center),
+            fullinertia=numbers(tensor6(inertia)),
+        )
 
     def add_joint(j):
         name = j.get("name")
         child = j.find("child").get("link")
-        parent = bodies[j.find("parent").get("link")]
-        body = ET.SubElement(parent, "body", name=child, **pose(j.find("origin")))
+        parent = j.find("parent").get("link")
+        body = ET.SubElement(
+            bodies[parent], "body", name=child, gravcomp="0", **pose(j.find("origin"))
+        )
         bodies[child] = body
+        info = {
+            "parent": parent,
+            "child": child,
+            "type": j.get("type"),
+            "xyz": vector(j.find("origin"), "xyz").tolist(),
+            "rpy": vector(j.find("origin"), "rpy").tolist(),
+            "class": 2,
+        }
+        if name.endswith("_wheel"):
+            info.update(
+                classification_override={
+                    "x": 1,
+                    "y": 3,
+                    "z": 2,
+                    "rpy": 4,
+                    "axis_sign": 4,
+                },
+                source_xyz=source_wheel_origins[name],
+            )
         if j.get("type") != "fixed":
-            attributes = {"name": name, "type": "slide" if j.get("type") == "prismatic" else "hinge", "axis": j.find("axis").get("xyz")}
+            attrs = {
+                "name": name,
+                "type": "slide" if j.get("type") == "prismatic" else "hinge",
+                "axis": j.find("axis").get("xyz"),
+            }
+            info["axis"] = vector(j.find("axis"), "xyz").tolist()
             limit = j.find("limit")
             if limit is not None:
-                attributes["range"] = f"{limit.get('lower')} {limit.get('upper')}"
-            dynamics = j.find("dynamics")
-            if dynamics is not None:
-                attributes["damping"] = dynamics.get("damping", "0")
-                attributes["frictionloss"] = dynamics.get("friction", "0")
-            if name in ("gripper_joint1", "gripper_joint2"):
-                # opening=2*q1=-2*q2: split the virtual slider's dissipated power equally.
-                opening_dynamics = gripper.find("joint[@name='gripper']/dynamics")
-                attributes["damping"] = numbers([2 * float(opening_dynamics.get("damping"))])
-                attributes["frictionloss"] = opening_dynamics.get("friction")
-            ET.SubElement(body, "joint", attributes)
+                attrs["range"] = f"{limit.get('lower')} {limit.get('upper')}"
+                info["range"] = [float(limit.get("lower")), float(limit.get("upper"))]
+                info["urdf_effort"] = float(limit.get("effort"))
+                info["urdf_velocity"] = float(limit.get("velocity"))
+            ET.SubElement(body, "joint", attrs)
+        manifest["kinematics"][name] = info
         populate(child, body)
 
+    populate("base_link", base)
     for j in wheel_joints:
         add_joint(j)
-    piper_base = ET.SubElement(base, "body", name="piper_base_link", pos=numbers(MOUNT))
-    piper_base.append(ET.Comment(" Rigid direct deck mount: xyz=(0,0,0.054) m, rpy=(0,0,0). "))
-    bodies["piper_base_link"] = piper_base
-    populate("piper_base_link", piper_base)
+    mount_joint = ET.fromstring(
+        '<joint name="scout_to_piper_joint" type="fixed"><parent link="base_link"/><child link="piper_base_link"/><origin rpy="0 0 0"/></joint>'
+    )
+    mount_joint.find("origin").set("xyz", numbers(mount))
+    add_joint(mount_joint)
+    manifest["kinematics"]["scout_to_piper_joint"]["class"] = 3
     for j in arm.findall("joint"):
         add_joint(j)
     for j in gripper.findall("joint"):
         if j.get("name") != "gripper":
             add_joint(j)
     equality = ET.SubElement(root, "equality")
-    equality.append(ET.Comment(" Source mimic: q1=opening/2, q2=-opening/2. Remove nonphysical dummy opening slider. "))
-    ET.SubElement(equality, "joint", name="gripper_symmetry", joint1="gripper_joint2", joint2="gripper_joint1", polycoef="0 -1 0 0 0", solref="0.002 1", solimp="0.99 0.999 0.001")
+    ET.SubElement(
+        equality,
+        "joint",
+        name="gripper_symmetry",
+        joint1="gripper_joint2",
+        joint2="gripper_joint1",
+        polycoef="0 -1 0 0 0",
+        solref=numbers(config["simulation"]["gripper_equality_solref"]),
+        solimp=numbers(config["simulation"]["gripper_equality_solimp"]),
+    )
     keyframe = ET.SubElement(root, "keyframe")
-    qpos = [0, 0, base_height, 1, 0, 0, 0, *([0] * 4), *HOME_ARM, 0.02, -0.02]
-    ET.SubElement(keyframe, "key", name="home", qpos=numbers(qpos))
-
-    # Check deck across the complete rectangular Piper base footprint using vertical rays.
-    d = collada.Collada(str(mesh_files["base_link"]))
-    vertices, faces, offset = [], [], 0
-    for g in d.scene.objects("geometry"):
-        for p in g.primitives():
-            if hasattr(p, "triangleset"):
-                p = p.triangleset()
-            vertices.append(np.asarray(p.vertex) @ transforms["base_link"].T)
-            faces.append(p.vertex_index + offset)
-            offset += len(p.vertex)
-    vertices, faces = np.concatenate(vertices), np.concatenate(faces)
-    lo, hi = converted["piper_base_link"][1].min(0), converted["piper_base_link"][1].max(0)
-    heights = [roof_heights(vertices, faces, [x, y]) for x in np.linspace(lo[0], hi[0], 11) for y in np.linspace(lo[1], hi[1], 11)]
-    manifest["mount"].update({"piper_base_bounds_m": [lo.tolist(), hi.tolist()], "deck_grid": [11, 11], "deck_z_range_m": [min(heights), max(heights)], "min_clearance_m": MOUNT[2] + lo[2] - max(heights)})
-    triangles = vertices[faces]
-    overlaps = np.all(triangles[:, :, :2].max(1) >= lo[:2], axis=1) & np.all(triangles[:, :, :2].min(1) <= hi[:2], axis=1)
-    manifest["mount"]["conservative_deck_z_max_m"] = float(triangles[overlaps, :, 2].max())
-    assert manifest["mount"]["conservative_deck_z_max_m"] <= MOUNT[2] + lo[2]
-    assert 0 <= manifest["mount"]["min_clearance_m"] < 1e-5
+    ET.SubElement(
+        keyframe,
+        "key",
+        name="home",
+        qpos=numbers(
+            [0, 0, base_height, 1, 0, 0, 0, *([0] * 4), *HOME_ARM, 0.02, -0.02]
+        ),
+    )
+    params = {}
+    for i, j in enumerate(arm.findall("joint")):
+        params[j.get("name")] = {
+            "effort_Nm": float(j.find("limit").get("effort")),
+            "command_limit_Nm": config["arm"]["torque_limits_Nm"][i],
+            "damping_Nm_s_per_rad": 0.0,
+            "frictionloss_Nm": 0.0,
+            "profile": config["arm"]["torque_profile"],
+        }
+    manifest["arm_dynamics"] = configure_arm_dynamics(root, params)
     manifest["initial_base_height_m"] = base_height
     manifest["home_arm_rad"] = HOME_ARM
-    manifest["gripper_reduction"] = {"opening_m": "2*q1 = -2*q2", "removed_virtual_mass_kg": 0.001,
-                                      "finger_damping_Ns_per_m": 1.0, "finger_friction_N": 0.05,
-                                      "method": "equal power-preserving split of source virtual opening joint damping 0.5 and friction 0.05"}
-    for path in [scout_path, arm_path, gripper_path, DESCRIPTION / "scout_piper.urdf.xacro"]:
-        manifest["source_files"][str(path.relative_to(ROOT))] = hashlib.sha256(path.read_bytes()).hexdigest()
-    for src, dest in [(SOURCE / "third_party/agx_arm_urdf/LICENSE", "Piper-MIT.txt"), (SOURCE / "third_party/scout_ros2/LICENSE", "Scout-Apache-2.0.txt")]:
-        shutil.copyfile(src, OUTPUT / "licenses" / dest)
-        manifest["source_files"][str(src.relative_to(ROOT))] = hashlib.sha256(src.read_bytes()).hexdigest()
+    manifest["wheel_frames"] = {
+        "position_classes": {"x": 1, "y": 3, "z": 2},
+        "normalization_class": 4,
+        "source_origins": source_wheel_origins,
+        "description": "manual wheelbase and tire-center track; retain URDF vertical stance; exact +/-pi/2 wheel rotations; positive spin forward on all wheels",
+    }
+    manifest["mass_summary"].update(
+        chassis_kg=manifest["inertials"]["base_link"]["mass_kg"],
+        wheels_kg=sum(
+            v["mass_kg"]
+            for n, v in manifest["inertials"].items()
+            if n.endswith("_wheel_link")
+        ),
+        arm_with_flange_kg=sum(
+            manifest["inertials"][n]["mass_kg"]
+            for n in [
+                "piper_base_link",
+                *[f"link{i}" for i in range(1, 7)],
+                "flange_link",
+            ]
+        ),
+        gripper_kg=sum(
+            manifest["inertials"][n]["mass_kg"]
+            for n in ["gripper_base", "gripper_link1", "gripper_link2"]
+        ),
+        robot_kg=sum(v["mass_kg"] for v in manifest["inertials"].values()),
+    )
+    # Store small source snapshots for independent FK validation without network/cache/ROS.
+    for src, dest in references:
+        target = OUTPUT / "reference" / dest
+        shutil.copyfile(src, target)
+        manifest["reference_files"]["reference/" + dest] = hashlib.sha256(
+            target.read_bytes()
+        ).hexdigest()
+    canonical = ET.Element("robot", name="normalized_scout_piper")
+    for tree in [scout, arm, gripper]:
+        for j in tree.findall("joint"):
+            if j.get("name") != "gripper":
+                canonical.append(copy.deepcopy(j))
+    canonical.insert(4, mount_joint)
+    ET.indent(canonical, space="  ")
+    target = OUTPUT / "reference/normalized_kinematics.urdf"
+    ET.ElementTree(canonical).write(target, encoding="utf-8", xml_declaration=True)
+    manifest["reference_files"]["reference/normalized_kinematics.urdf"] = (
+        hashlib.sha256(target.read_bytes()).hexdigest()
+    )
+    shutil.copyfile(PIPER / "LICENSE", OUTPUT / "licenses/Piper-MIT.txt")
+    bsd = (
+        (SCOUT / "urdf/scout_wheel_type1.xacro")
+        .read_text()
+        .split("<!--", 1)[1]
+        .split("-->", 1)[0]
+    )
+    (OUTPUT / "licenses/Scout-BSD.txt").write_text(bsd.strip() + "\n")
     for relative, record in manifest["assets"].items():
         record["sha256"] = hashlib.sha256((OUTPUT / relative).read_bytes()).hexdigest()
+        source = ROOT / record["source"]
+        key, relative_input = (
+            source.relative_to(CACHE).parts[0],
+            "/".join(source.relative_to(CACHE).parts[1:]),
+        )
+        repo = lock["repositories"][key]
+        record["source_url"] = (
+            f"{repo['repository']}/blob/{repo['commit']}/{relative_input}"
+        )
+        record["geometry_class"] = 2 if "/visual/" in relative else 3
+    # Remove stale generated meshes only; reference/config/report and original sources are untouched.
+    for directory in [OUTPUT / "assets/visual", OUTPUT / "assets/collision"]:
+        for path in directory.iterdir():
+            if str(path.relative_to(OUTPUT)) not in manifest["assets"]:
+                path.unlink()
     ET.indent(root, space="  ")
-    ET.ElementTree(root).write(OUTPUT / "scene.xml", encoding="utf-8", xml_declaration=True)
+    ET.ElementTree(root).write(
+        OUTPUT / "scene.xml", encoding="utf-8", xml_declaration=True
+    )
     (OUTPUT / "source_manifest.json").write_text(json.dumps(manifest, indent=2) + "\n")
+    with (OUTPUT / "inertial_parameters.csv").open("w", newline="") as f:
+        writer = csv.writer(f)
+        writer.writerow(
+            [
+                "body",
+                "mass_kg",
+                "com_x_m",
+                "com_y_m",
+                "com_z_m",
+                "Ixx_kg_m2",
+                "Iyy_kg_m2",
+                "Izz_kg_m2",
+                "Ixy_kg_m2",
+                "Ixz_kg_m2",
+                "Iyz_kg_m2",
+                "mass_class",
+                "com_class",
+                "inertia_class",
+                "method",
+            ]
+        )
+        for name, record in manifest["inertials"].items():
+            writer.writerow(
+                [
+                    name,
+                    record["mass_kg"],
+                    *record["com_m"],
+                    *tensor6(np.array(record["tensor_kg_m2"])),
+                    record["mass_class"],
+                    record["com_class"],
+                    record["inertia_class"],
+                    record["method"],
+                ]
+            )
     for name, record in manifest["inertials"].items():
-        print(f"{name}: {record['mass_kg']:g} kg; {record['method']}")
-    print(f"Wrote {OUTPUT / 'scene.xml'}; base reset height {base_height:.9f} m")
+        print(f"{name}: {record['mass_kg']:.9g} kg; {record['method']}")
+    print("Mass budget:", manifest["mass_summary"])
+    print("Direct mount:", manifest["mount"]["xyz"])
 
 
 if __name__ == "__main__":
-    build()
+    parser = argparse.ArgumentParser(description=__doc__)
+    parser.add_argument(
+        "--fetch",
+        action="store_true",
+        help="Download missing checksum-pinned official build inputs",
+    )
+    build(parser.parse_args().fetch)

@@ -2,16 +2,19 @@
 
 Visual OBJ files are converted from the supplied Collada meshes with scene
 transforms baked and diffuse colors assigned in `scene.xml`. Collision STL files
-are convex hull derivatives of supplied Piper collision meshes. Original source
-paths, checksums, conversion operations, and inertial changes are recorded in
-`source_manifest.json`. The source workspace is not modified.
+are convex hull derivatives of official Piper collision meshes. Source commits,
+URLs, checksums, operations, parameter classifications, and inertial changes are
+recorded in `upstream_lock.json` and `source_manifest.json`.
 
-Scout source: `ppscout_ws-dev/src/third_party/scout_ros2/`, distributed with the
-Apache 2.0 license; see `licenses/Scout-Apache-2.0.txt`.
+Scout Mini geometry/description: AgileX `scout_ros`, commit
+`01e07881cdc566c3a657e288c59a75577992d13e`. Its description package declares BSD;
+the upstream BSD notice is preserved in `licenses/Scout-BSD.txt`.
 
-Piper source: `ppscout_ws-dev/src/third_party/agx_arm_urdf/`, distributed with the
-MIT license, Copyright (c) 2026 aalicecc; see `licenses/Piper-MIT.txt`.
+Standard Piper and gripper: AgileX `agx_arm_urdf`, commit
+`680fa925cd00db7e2628563d2edc5540963045de`, MIT License,
+Copyright (c) 2026 aalicecc; see `licenses/Piper-MIT.txt`.
 
 The combined MJCF is a simplified derivative for initial visualization and
 simulation. Physical approximations and all model changes are described in
-`../../docs/model_notes.md`.
+`../../docs/physical_model_report.md`. The old Gazebo archive/workspace is not an
+input to this rebuild. Public manuals are linked and hashed, not redistributed.

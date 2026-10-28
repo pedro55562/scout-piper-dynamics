@@ -1,0 +1,32 @@
+{
+  "python": "3.12.3",
+  "mujoco": "3.17.0",
+  "numpy": "2.5.4",
+  "tests_run": 13,
+  "failures": 0,
+  "errors": 0,
+  "skipped": 0,
+  "scene_sha256": "2f0f07049377b453e3c53cc83df6e844ccf36c6868ca9ceb8bf25e27f8c45e86",
+  "manifest_sha256": "079c1607085b3611add5da7a5e39294d373bc60aacd15c4e4df95eb6b8f7fadf",
+  "metrics": {
+    "gravity_response_0_25_s": {
+      "max_joint_change_rad": 1.4584323884936985,
+      "actuator_torque_Nm": 0.0
+    },
+    "zero_torque_10_s": {
+      "steps": 10000,
+      "physics_warnings": 0,
+      "max_ground_penetration_m": 0.0009424425858368668,
+      "max_contact_penetration_m": 0.005918978627144882,
+      "max_gripper_symmetry_error_m": 2.052850337587453e-06,
+      "final_base_height_m": 0.1808573972711513,
+      "supporting_wheels": [
+        "front_left_wheel_link_contact",
+        "front_right_wheel_link_contact",
+        "rear_left_wheel_link_contact",
+        "rear_right_wheel_link_contact"
+      ],
+      "actuator_torque_Nm": 0.0
+    }
+  }
+}

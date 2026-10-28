@@ -1,0 +1,130 @@
+{
+  "retrieved_on": "2026-10-28",
+  "repositories": {
+    "scout_ros": {
+      "repository": "https://github.com/agilexrobotics/scout_ros",
+      "commit": "01e07881cdc566c3a657e288c59a75577992d13e",
+      "files": {
+        "scout_description/urdf/scout_mini.urdf.xacro": "52bfea9b016ed8f5749060ffd10765c7c6dafefebbc0ddd510a8a4288242b629",
+        "scout_description/urdf/scout_mini_wheel.xacro": "47e62445ef798f74442d6310808a12ce5c3bc27033d917184c2619f65981037a",
+        "scout_description/meshes/scout_mini_base_link.dae": "5b7536b48ddecfcab48c90ece54c69ec524242ce64b6073cfd60757ad1dd478a",
+        "scout_description/meshes/wheel.dae": "71d7c2c16c03782d127b84fcddba7393f057566885a20c1257dcfbbf2e65439c",
+        "scout_description/package.xml": "2189cd4240b59d1d134508822528dd91cdf6061b708abfb517d69a11ab9c6f9e",
+        "scout_description/urdf/scout_wheel_type1.xacro": "ae9e7d03c1515834079baeabab0f04e6290a4bf470bc647ba5ee1be2a4db9507"
+      }
+    },
+    "agx_arm_urdf": {
+      "repository": "https://github.com/agilexrobotics/agx_arm_urdf",
+      "commit": "680fa925cd00db7e2628563d2edc5540963045de",
+      "files": {
+        "LICENSE": "247944c63de1573653722ba784f96123da267105b7b48577e0c8826a24b809f6",
+        "piper/urdf/piper_description.urdf": "d9e97fec40ae47d12cf482417acec48706ce4a1398b31b91f328d5b3d75f6183",
+        "piper/urdf/piper_with_gripper_description.xacro": "374013965d83e80923196598c0bfbba2b0703b9f412ed9ec255c82b5c50e0f53",
+        "piper/meshes/base_link.stl": "fd4a3d6d0266205fe3f725f048645be66592c23564db22e08b0807d5569b2c64",
+        "piper/meshes/link1.stl": "9ee6e1d67c0241f42a0dbaf5c676d19230375ed078ee1943bb8c4c37ab303d14",
+        "piper/meshes/link2.stl": "0d37675b699b643f2e15348de99aed535fac10dc5f09a79b8e4b0acfaf4e0378",
+        "piper/meshes/link3.stl": "e8ae51f17c0c7f6d67b753922e2cc269f5e8372a65734f859231639a64fe8fad",
+        "piper/meshes/link4.stl": "efa33022976218f246f736a6133494b5d0e5486e8b50b52900c42f285ae85558",
+        "piper/meshes/link5.stl": "a1c69d1c7f6f8c60e2c82331c0f444725200ed4053d3e5ec23aa82cb5db5b29f",
+        "piper/meshes/link6.stl": "88374973bc3bd9e7389b5853cd6e555af9731c30b658b1ee6f85be34a126cb92",
+        "piper/meshes/flange.stl": "f9ce752f93a6598858a779e3d8755a09e466b588efcffc3a1c3953773753a22b",
+        "piper/meshes/dae/base_link.dae": "99cd5083e485e3eb739d967c57451f11e32e80b9f4f293815ba3b546d99bdc3c",
+        "piper/meshes/dae/link1.dae": "ea11f3382f6b32ec6d2283db4320ba2065ee1d24358f9b236ce71cfd4cd352cd",
+        "piper/meshes/dae/link2.dae": "f6a723ff09c605a4bab19c1581b8879461967afe5626a3b7ca0a884e5f11a869",
+        "piper/meshes/dae/link3.dae": "17cee6f92b741f21e29e4a3a3f600ba8093af3e1f61ae717747e03251a76982c",
+        "piper/meshes/dae/link4.dae": "2a4d28b04341c22fdc38e9fc576c2386bf6f1e8ef0526d5b2cf179ea9ea650b3",
+        "piper/meshes/dae/link5.dae": "fc7253ad4128731fded02700d5f35b94a30f3c219cd2b75b62b0abbd81bf7bff",
+        "piper/meshes/dae/link6.dae": "92f67e27b573969b4a1806ff3bc427bf9219c8ff78fec80d91ce3f32d69b1b9d",
+        "piper/meshes/dae/flange.dae": "421c3e20c6109df3c96c5ce18ff0b2609b6604135ff790e4bfc1d9a281b0701a",
+        "agx_gripper/meshes/gripper_base.stl": "0b839dc0bcb7d94e3422c74f6396b54a0441ba4836448ab5586e7f372d1bdbf3",
+        "agx_gripper/meshes/gripper_link1.stl": "475a7d8db056524d7659fadf5a2c307d62791047b6214d733dfc7846ed1c613d",
+        "agx_gripper/meshes/gripper_link2.stl": "3f88d534a85e28a33ef7d2061adacbd1d25214aa9325f9e464aad0f9e4b74606",
+        "agx_gripper/meshes/dae/gripper_base.dae": "aaea10ec06709d6a3343dd3378553eee3df40b43ee276df10c5b68ac7f61bae2",
+        "agx_gripper/meshes/dae/gripper_link1.dae": "b4aaf0e024d09eb0454e70e0c5092638edcf7da7c253d1effdeeaec46f76427b",
+        "agx_gripper/meshes/dae/gripper_link2.dae": "0da1350898b2787b76b84698253aeb1efd2ddb6360b2fa2ae03ecff389883af8"
+      }
+    },
+    "pyAgxArm": {
+      "repository": "https://github.com/agilexrobotics/pyAgxArm",
+      "commit": "d90e234ba8e408cfa964b38aa9120b3131fc9f85",
+      "files": {
+        "docs/piper/firmware_reference.md": "66a410a58d3289100adfa594cce7b8e50bb004052404812c8277c642d9e94f77",
+        "pyAgxArm/api/constants.py": "f2ab8c10696d82ce23a279ca6ad2fcaf2c60848beca423c192cddeac4360c1aa"
+      }
+    },
+    "ugv_gazebo_sim": {
+      "repository": "https://github.com/agilexrobotics/ugv_gazebo_sim",
+      "commit": "27633a956c845903ee630538afeb17fe70afdd84",
+      "files": {
+        "scout/scout_description/urdf/scout_mini_wheel_1.xacro": "b0f0a68637abfa2d095336dfb8a7327a8b0ba3958c0076fd3462448c22b4a52a"
+      }
+    }
+  },
+  "manuals": {
+    "scout_mini": {
+      "url": "https://cdn.shopify.com/s/files/1/0551/0630/6141/files/SCOUT_MINI_USER_MANUAL_AgileX.pdf?v=1792636734",
+      "version": "cover V2.0.1 2023.08; revision table V2.0.4 2024-06-19",
+      "sha256": "7629f427ce888fb35181a1eca5f187b4f378855df93c3630e6d09d865be09585"
+    },
+    "piper": {
+      "url": "https://cdn.shopify.com/s/files/1/0551/0630/6141/files/PIPER_Product_User_Manual.pdf?v=1791860528",
+      "version": "V1.0 2025.06",
+      "sha256": "5ce7a2ea65ebb6d9e00371a2a2b073e7dbb169f8eac13f5d3d405f63c531d884"
+    }
+  },
+  "legacy_workspace": {
+    "revision": "unknown; original extracted workspace was not a pinned upstream checkout",
+    "source_files_sha256": {
+      "ppscout_ws-dev/src/third_party/scout_ros2/scout_description/meshes/scout_mini_base_link2.dae": "c91ba00c5822e49443202ef9cc9b512e210cca0e1c75ce91db5a8a26821dc6ad",
+      "ppscout_ws-dev/src/third_party/scout_ros2/scout_description/meshes/wheel.dae": "71d7c2c16c03782d127b84fcddba7393f057566885a20c1257dcfbbf2e65439c",
+      "ppscout_ws-dev/src/third_party/agx_arm_urdf/piper/meshes/base_link.stl": "fd4a3d6d0266205fe3f725f048645be66592c23564db22e08b0807d5569b2c64",
+      "ppscout_ws-dev/src/third_party/agx_arm_urdf/piper/meshes/dae/base_link.dae": "99cd5083e485e3eb739d967c57451f11e32e80b9f4f293815ba3b546d99bdc3c",
+      "ppscout_ws-dev/src/third_party/agx_arm_urdf/piper/meshes/link1.stl": "9ee6e1d67c0241f42a0dbaf5c676d19230375ed078ee1943bb8c4c37ab303d14",
+      "ppscout_ws-dev/src/third_party/agx_arm_urdf/piper/meshes/dae/link1.dae": "ea11f3382f6b32ec6d2283db4320ba2065ee1d24358f9b236ce71cfd4cd352cd",
+      "ppscout_ws-dev/src/third_party/agx_arm_urdf/piper/meshes/link2.stl": "0d37675b699b643f2e15348de99aed535fac10dc5f09a79b8e4b0acfaf4e0378",
+      "ppscout_ws-dev/src/third_party/agx_arm_urdf/piper/meshes/dae/link2.dae": "f6a723ff09c605a4bab19c1581b8879461967afe5626a3b7ca0a884e5f11a869",
+      "ppscout_ws-dev/src/third_party/agx_arm_urdf/piper/meshes/link3.stl": "e8ae51f17c0c7f6d67b753922e2cc269f5e8372a65734f859231639a64fe8fad",
+      "ppscout_ws-dev/src/third_party/agx_arm_urdf/piper/meshes/dae/link3.dae": "17cee6f92b741f21e29e4a3a3f600ba8093af3e1f61ae717747e03251a76982c",
+      "ppscout_ws-dev/src/third_party/agx_arm_urdf/piper/meshes/link4.stl": "efa33022976218f246f736a6133494b5d0e5486e8b50b52900c42f285ae85558",
+      "ppscout_ws-dev/src/third_party/agx_arm_urdf/piper/meshes/dae/link4.dae": "2a4d28b04341c22fdc38e9fc576c2386bf6f1e8ef0526d5b2cf179ea9ea650b3",
+      "ppscout_ws-dev/src/third_party/agx_arm_urdf/piper/meshes/link5.stl": "a1c69d1c7f6f8c60e2c82331c0f444725200ed4053d3e5ec23aa82cb5db5b29f",
+      "ppscout_ws-dev/src/third_party/agx_arm_urdf/piper/meshes/dae/link5.dae": "fc7253ad4128731fded02700d5f35b94a30f3c219cd2b75b62b0abbd81bf7bff",
+      "ppscout_ws-dev/src/third_party/agx_arm_urdf/piper/meshes/link6.stl": "88374973bc3bd9e7389b5853cd6e555af9731c30b658b1ee6f85be34a126cb92",
+      "ppscout_ws-dev/src/third_party/agx_arm_urdf/piper/meshes/dae/link6.dae": "92f67e27b573969b4a1806ff3bc427bf9219c8ff78fec80d91ce3f32d69b1b9d",
+      "ppscout_ws-dev/src/third_party/agx_arm_urdf/piper/meshes/flange.stl": "f9ce752f93a6598858a779e3d8755a09e466b588efcffc3a1c3953773753a22b",
+      "ppscout_ws-dev/src/third_party/agx_arm_urdf/piper/meshes/dae/flange.dae": "421c3e20c6109df3c96c5ce18ff0b2609b6604135ff790e4bfc1d9a281b0701a",
+      "ppscout_ws-dev/src/third_party/agx_arm_urdf/piper/meshes/gripper_base.stl": "0b839dc0bcb7d94e3422c74f6396b54a0441ba4836448ab5586e7f372d1bdbf3",
+      "ppscout_ws-dev/src/third_party/agx_arm_urdf/piper/meshes/dae/gripper_base.dae": "aaea10ec06709d6a3343dd3378553eee3df40b43ee276df10c5b68ac7f61bae2",
+      "ppscout_ws-dev/src/third_party/agx_arm_urdf/piper/meshes/gripper_link1.stl": "475a7d8db056524d7659fadf5a2c307d62791047b6214d733dfc7846ed1c613d",
+      "ppscout_ws-dev/src/third_party/agx_arm_urdf/piper/meshes/dae/gripper_link1.dae": "b4aaf0e024d09eb0454e70e0c5092638edcf7da7c253d1effdeeaec46f76427b",
+      "ppscout_ws-dev/src/third_party/agx_arm_urdf/piper/meshes/gripper_link2.stl": "3f88d534a85e28a33ef7d2061adacbd1d25214aa9325f9e464aad0f9e4b74606",
+      "ppscout_ws-dev/src/third_party/agx_arm_urdf/piper/meshes/dae/gripper_link2.dae": "0da1350898b2787b76b84698253aeb1efd2ddb6360b2fa2ae03ecff389883af8",
+      "ppscout_ws-dev/src/third_party/scout_ros2/scout_description/urdf/model.xacro": "6883defb96d1c2fe41cc300d48bf34e45c8e768be1396511452c4fd0e80d7f38",
+      "ppscout_ws-dev/src/ppscout_description/urdf/piper_description_scout.urdf": "555f3388c2a84fa064833bdcc3f2a47da809a1c08338d14507f485d862798525",
+      "ppscout_ws-dev/src/ppscout_description/urdf/piper_with_gripper_scout.xacro": "a7158081eeb4aa573991a2f8fcc1658002c96b42db6932c3b2af9d500ffdb5c6",
+      "ppscout_ws-dev/src/ppscout_description/urdf/scout_piper.urdf.xacro": "5c37c62f72ccc2167fb73ccfe80da501c1b917bcfb111907102cf26713d04a28",
+      "ppscout_ws-dev/src/third_party/agx_arm_urdf/LICENSE": "247944c63de1573653722ba784f96123da267105b7b48577e0c8826a24b809f6",
+      "ppscout_ws-dev/src/third_party/scout_ros2/LICENSE": "c71d239df91726fc519c6eb72d318ec65820627232b2f796219e87dcf35d0ab4"
+    },
+    "previous_robot_mass_kg": 76.7,
+    "previous_scout_mass_kg": 72.0
+  },
+  "investigated_repositories": {
+    "scout_ros2": {
+      "url": "https://github.com/agilexrobotics/scout_ros2",
+      "commit": "bf0110ff44cc70cdda2931d69f0e2669a3e26b9d"
+    },
+    "piper_ros": {
+      "url": "https://github.com/agilexrobotics/piper_ros",
+      "commit": "ac41fcbcdda598f01b51cf6175ed9a24d0dacadc"
+    },
+    "agx_arm_sim": {
+      "url": "https://github.com/agilexrobotics/agx_arm_sim",
+      "commit": "f8cd8b147c75d59e14f90fb0646770eefa268ed0"
+    },
+    "ugv_gazebo_sim": {
+      "url": "https://github.com/agilexrobotics/ugv_gazebo_sim",
+      "commit": "27633a956c845903ee630538afeb17fe70afdd84"
+    }
+  }
+}

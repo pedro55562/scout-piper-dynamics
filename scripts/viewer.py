@@ -3,12 +3,11 @@
 
 import argparse
 import math
-from pathlib import Path
 import threading
 import time
+from pathlib import Path
 
 import mujoco
-
 
 MODEL_PATH = Path(__file__).resolve().parents[1] / "models/scout_piper/scene.xml"
 
@@ -17,34 +16,60 @@ def load_model(path=MODEL_PATH):
     model = mujoco.MjModel.from_xml_path(str(path))
     data = mujoco.MjData(model)
     mujoco.mj_resetDataKeyframe(model, data, model.key("home").id)
+    data.ctrl[:] = 0
     mujoco.mj_forward(model, data)
     return model, data
 
 
 def main():
     parser = argparse.ArgumentParser(description=__doc__)
-    parser.add_argument("--headless", action="store_true", help="Step and exit without opening a window")
-    parser.add_argument("--steps", type=int, default=5000, help="Number of headless steps (default: 5000 = 5 s)")
-    parser.add_argument("--run", action="store_true", help="Start the viewer running; default is paused for inspection")
+    parser.add_argument(
+        "--headless", action="store_true", help="Step and exit without opening a window"
+    )
+    parser.add_argument(
+        "--steps",
+        type=int,
+        default=5000,
+        help="Number of headless steps (default: 5000 = 5 s)",
+    )
+    parser.add_argument(
+        "--run",
+        action="store_true",
+        help="Start the viewer running; default is paused for inspection",
+    )
     parser.add_argument("--joints", action="store_true", help="Show joint axes")
-    parser.add_argument("--collisions", action="store_true", help="Show collision geometry (group 3)")
+    parser.add_argument(
+        "--collisions", action="store_true", help="Show collision geometry (group 3)"
+    )
     args = parser.parse_args()
     if args.steps < 0:
         parser.error("--steps must be nonnegative")
     model, data = load_model()
-    print(f"Loaded {model.nbody - 1} robot bodies, {model.njnt} joints, "
-          f"nq={model.nq}, nv={model.nv}, {model.neq} gripper equality.")
+    print(
+        f"Loaded {model.nbody - 1} robot bodies, {model.njnt} joints, "
+        f"nq={model.nq}, nv={model.nv}, {model.neq} gripper equality."
+    )
     print("Joints: " + ", ".join(model.joint(i).name for i in range(model.njnt)))
+    print(
+        "Six Piper motor inputs are joint-side torques in N·m (gear=1); initial commands are zero."
+    )
     if args.headless:
         for _ in range(args.steps):
+            data.ctrl[:] = 0
             mujoco.mj_step(model, data)
-        if not all(math.isfinite(float(x)) for x in [*data.qpos, *data.qvel, *data.qacc]):
+        if not all(
+            math.isfinite(float(x)) for x in [*data.qpos, *data.qvel, *data.qacc]
+        ):
             raise RuntimeError("Nonfinite simulation state")
         warnings = sum(int(w.number) for w in data.warning)
         if warnings or abs(data.time - args.steps * model.opt.timestep) > 1e-8:
-            raise RuntimeError(f"Simulation warning or unexpected time reset: {warnings} warnings, t={data.time}")
-        print(f"Stepped {args.steps} times: t={data.time:.3f} s, contacts={data.ncon}, "
-              f"base z={data.qpos[2]:.4f} m, warnings={warnings}.")
+            raise RuntimeError(
+                f"Simulation warning or unexpected time reset: {warnings} warnings, t={data.time}"
+            )
+        print(
+            f"Stepped {args.steps} times: t={data.time:.3f} s, contacts={data.ncon}, "
+            f"base z={data.qpos[2]:.4f} m, warnings={warnings}."
+        )
         return
 
     from mujoco import viewer as mj_viewer
@@ -63,8 +88,13 @@ def main():
         elif key == ord("R"):
             reset.set()
 
-    print("Space: pause/run. R: reset home. Mouse: rotate/pan/zoom. "
-          "Expand Joint in the right panel to inspect joint positions while paused.")
+    print(
+        "Space: pause/run. R: reset home. Mouse: rotate/pan/zoom. "
+        "Expand Joint in the right panel to inspect joint positions while paused."
+    )
+    print(
+        "The Control panel can apply manual torques; run scripts/zero_torque.py for a guaranteed zero-input test."
+    )
     existing_threads = set(threading.enumerate())
     with mj_viewer.launch_passive(model, data, key_callback=key_callback) as viewer:
         viewer.cam.lookat[:] = [0, 0, 0.43]
