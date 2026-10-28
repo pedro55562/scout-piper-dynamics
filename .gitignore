@@ -205,6 +205,10 @@ cython_debug/
 # Temporary file for partial code execution
 tempCodeRunnerFile.py
 
+# MuJoCo writes graphics/solver diagnostics here.
+MUJOCO_LOG.TXT
+MJMODEL.TXT
+
 # Ruff stuff:
 .ruff_cache/
 

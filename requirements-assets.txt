@@ -1,0 +1,5 @@
+# Only needed to regenerate assets from the supplied extracted source.
+-r requirements.txt
+trimesh==5.2.0
+pycollada==0.9.3
+scipy>=1.11,<2

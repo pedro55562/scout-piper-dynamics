@@ -1,0 +1,1771 @@
+{
+  "description": "Deterministic conversion of local supplied files; no source files modified.",
+  "source_files": {
+    "ppscout_ws-dev/src/third_party/scout_ros2/scout_description/meshes/scout_mini_base_link2.dae": "c91ba00c5822e49443202ef9cc9b512e210cca0e1c75ce91db5a8a26821dc6ad",
+    "ppscout_ws-dev/src/third_party/scout_ros2/scout_description/meshes/wheel.dae": "71d7c2c16c03782d127b84fcddba7393f057566885a20c1257dcfbbf2e65439c",
+    "ppscout_ws-dev/src/third_party/agx_arm_urdf/piper/meshes/base_link.stl": "fd4a3d6d0266205fe3f725f048645be66592c23564db22e08b0807d5569b2c64",
+    "ppscout_ws-dev/src/third_party/agx_arm_urdf/piper/meshes/dae/base_link.dae": "99cd5083e485e3eb739d967c57451f11e32e80b9f4f293815ba3b546d99bdc3c",
+    "ppscout_ws-dev/src/third_party/agx_arm_urdf/piper/meshes/link1.stl": "9ee6e1d67c0241f42a0dbaf5c676d19230375ed078ee1943bb8c4c37ab303d14",
+    "ppscout_ws-dev/src/third_party/agx_arm_urdf/piper/meshes/dae/link1.dae": "ea11f3382f6b32ec6d2283db4320ba2065ee1d24358f9b236ce71cfd4cd352cd",
+    "ppscout_ws-dev/src/third_party/agx_arm_urdf/piper/meshes/link2.stl": "0d37675b699b643f2e15348de99aed535fac10dc5f09a79b8e4b0acfaf4e0378",
+    "ppscout_ws-dev/src/third_party/agx_arm_urdf/piper/meshes/dae/link2.dae": "f6a723ff09c605a4bab19c1581b8879461967afe5626a3b7ca0a884e5f11a869",
+    "ppscout_ws-dev/src/third_party/agx_arm_urdf/piper/meshes/link3.stl": "e8ae51f17c0c7f6d67b753922e2cc269f5e8372a65734f859231639a64fe8fad",
+    "ppscout_ws-dev/src/third_party/agx_arm_urdf/piper/meshes/dae/link3.dae": "17cee6f92b741f21e29e4a3a3f600ba8093af3e1f61ae717747e03251a76982c",
+    "ppscout_ws-dev/src/third_party/agx_arm_urdf/piper/meshes/link4.stl": "efa33022976218f246f736a6133494b5d0e5486e8b50b52900c42f285ae85558",
+    "ppscout_ws-dev/src/third_party/agx_arm_urdf/piper/meshes/dae/link4.dae": "2a4d28b04341c22fdc38e9fc576c2386bf6f1e8ef0526d5b2cf179ea9ea650b3",
+    "ppscout_ws-dev/src/third_party/agx_arm_urdf/piper/meshes/link5.stl": "a1c69d1c7f6f8c60e2c82331c0f444725200ed4053d3e5ec23aa82cb5db5b29f",
+    "ppscout_ws-dev/src/third_party/agx_arm_urdf/piper/meshes/dae/link5.dae": "fc7253ad4128731fded02700d5f35b94a30f3c219cd2b75b62b0abbd81bf7bff",
+    "ppscout_ws-dev/src/third_party/agx_arm_urdf/piper/meshes/link6.stl": "88374973bc3bd9e7389b5853cd6e555af9731c30b658b1ee6f85be34a126cb92",
+    "ppscout_ws-dev/src/third_party/agx_arm_urdf/piper/meshes/dae/link6.dae": "92f67e27b573969b4a1806ff3bc427bf9219c8ff78fec80d91ce3f32d69b1b9d",
+    "ppscout_ws-dev/src/third_party/agx_arm_urdf/piper/meshes/flange.stl": "f9ce752f93a6598858a779e3d8755a09e466b588efcffc3a1c3953773753a22b",
+    "ppscout_ws-dev/src/third_party/agx_arm_urdf/piper/meshes/dae/flange.dae": "421c3e20c6109df3c96c5ce18ff0b2609b6604135ff790e4bfc1d9a281b0701a",
+    "ppscout_ws-dev/src/third_party/agx_arm_urdf/piper/meshes/gripper_base.stl": "0b839dc0bcb7d94e3422c74f6396b54a0441ba4836448ab5586e7f372d1bdbf3",
+    "ppscout_ws-dev/src/third_party/agx_arm_urdf/piper/meshes/dae/gripper_base.dae": "aaea10ec06709d6a3343dd3378553eee3df40b43ee276df10c5b68ac7f61bae2",
+    "ppscout_ws-dev/src/third_party/agx_arm_urdf/piper/meshes/gripper_link1.stl": "475a7d8db056524d7659fadf5a2c307d62791047b6214d733dfc7846ed1c613d",
+    "ppscout_ws-dev/src/third_party/agx_arm_urdf/piper/meshes/dae/gripper_link1.dae": "b4aaf0e024d09eb0454e70e0c5092638edcf7da7c253d1effdeeaec46f76427b",
+    "ppscout_ws-dev/src/third_party/agx_arm_urdf/piper/meshes/gripper_link2.stl": "3f88d534a85e28a33ef7d2061adacbd1d25214aa9325f9e464aad0f9e4b74606",
+    "ppscout_ws-dev/src/third_party/agx_arm_urdf/piper/meshes/dae/gripper_link2.dae": "0da1350898b2787b76b84698253aeb1efd2ddb6360b2fa2ae03ecff389883af8",
+    "ppscout_ws-dev/src/third_party/scout_ros2/scout_description/urdf/model.xacro": "6883defb96d1c2fe41cc300d48bf34e45c8e768be1396511452c4fd0e80d7f38",
+    "ppscout_ws-dev/src/ppscout_description/urdf/piper_description_scout.urdf": "555f3388c2a84fa064833bdcc3f2a47da809a1c08338d14507f485d862798525",
+    "ppscout_ws-dev/src/ppscout_description/urdf/piper_with_gripper_scout.xacro": "a7158081eeb4aa573991a2f8fcc1658002c96b42db6932c3b2af9d500ffdb5c6",
+    "ppscout_ws-dev/src/ppscout_description/urdf/scout_piper.urdf.xacro": "5c37c62f72ccc2167fb73ccfe80da501c1b917bcfb111907102cf26713d04a28",
+    "ppscout_ws-dev/src/third_party/agx_arm_urdf/LICENSE": "247944c63de1573653722ba784f96123da267105b7b48577e0c8826a24b809f6",
+    "ppscout_ws-dev/src/third_party/scout_ros2/LICENSE": "c71d239df91726fc519c6eb72d318ec65820627232b2f796219e87dcf35d0ab4"
+  },
+  "assets": {
+    "assets/visual/base_link_visual_0.obj": {
+      "source": "ppscout_ws-dev/src/third_party/scout_ros2/scout_description/meshes/scout_mini_base_link2.dae",
+      "diffuse_rgba": [
+        1.0,
+        1.0,
+        1.0,
+        1.0
+      ],
+      "triangles": 6300,
+      "sha256": "dd3308b9bfaff357df86997dfd0e7a1fb37bdd4acc28df61379cd82eca7e92e6"
+    },
+    "assets/visual/base_link_visual_1.obj": {
+      "source": "ppscout_ws-dev/src/third_party/scout_ros2/scout_description/meshes/scout_mini_base_link2.dae",
+      "diffuse_rgba": [
+        0.800000011920929,
+        0.800000011920929,
+        0.800000011920929,
+        1.0
+      ],
+      "triangles": 22908,
+      "sha256": "3fdfb4f5014cbb5cf904c6ecc7befb89e5cf1158892360ecc17dc05edd7b078d"
+    },
+    "assets/visual/base_link_visual_2.obj": {
+      "source": "ppscout_ws-dev/src/third_party/scout_ros2/scout_description/meshes/scout_mini_base_link2.dae",
+      "diffuse_rgba": [
+        0.0,
+        0.0,
+        0.0,
+        1.0
+      ],
+      "triangles": 74346,
+      "sha256": "522e8422872358043d0559e6df4deb380c3b44c3f60f1e5c6856f9cfa085000f"
+    },
+    "assets/visual/base_link_visual_3.obj": {
+      "source": "ppscout_ws-dev/src/third_party/scout_ros2/scout_description/meshes/scout_mini_base_link2.dae",
+      "diffuse_rgba": [
+        1.0,
+        0.05000000074505806,
+        0.07000000029802322,
+        1.0
+      ],
+      "triangles": 2272,
+      "sha256": "60191d92374bd25e47484b96cb751348180a2340ec29d5575c104d2f8d8558f6"
+    },
+    "assets/visual/base_link_visual_4.obj": {
+      "source": "ppscout_ws-dev/src/third_party/scout_ros2/scout_description/meshes/scout_mini_base_link2.dae",
+      "diffuse_rgba": [
+        1.0,
+        0.699999988079071,
+        0.05999999865889549,
+        1.0
+      ],
+      "triangles": 9415,
+      "sha256": "61b1cbf26f474b41ebf27a78fbf466c003ba01eff4070175860a04a7ef9115cc"
+    },
+    "assets/visual/base_link_visual_5.obj": {
+      "source": "ppscout_ws-dev/src/third_party/scout_ros2/scout_description/meshes/scout_mini_base_link2.dae",
+      "diffuse_rgba": [
+        0.4099999964237213,
+        0.4099999964237213,
+        0.4099999964237213,
+        1.0
+      ],
+      "triangles": 52247,
+      "sha256": "0e3a0ccd0b8c0d8e93db057e88b36f913326d6d068bd12c503a00031a4182412"
+    },
+    "assets/visual/base_link_visual_6.obj": {
+      "source": "ppscout_ws-dev/src/third_party/scout_ros2/scout_description/meshes/scout_mini_base_link2.dae",
+      "diffuse_rgba": [
+        1.0,
+        0.699999988079071,
+        0.18000000715255737,
+        1.0
+      ],
+      "triangles": 26160,
+      "sha256": "97cc9e58d9379ade892ba6b322af6323273f4a4e5168f920ad15764dd7dccacb"
+    },
+    "assets/visual/wheel_visual_0.obj": {
+      "source": "ppscout_ws-dev/src/third_party/scout_ros2/scout_description/meshes/wheel.dae",
+      "diffuse_rgba": [
+        1.0,
+        0.05882352963089943,
+        0.05882352963089943,
+        1.0
+      ],
+      "triangles": 5292,
+      "sha256": "d812caeff00cd150e301afdcd47400e92ddc005d2c9028cbad0d489ec2b2949a"
+    },
+    "assets/visual/wheel_visual_1.obj": {
+      "source": "ppscout_ws-dev/src/third_party/scout_ros2/scout_description/meshes/wheel.dae",
+      "diffuse_rgba": [
+        0.8980392217636108,
+        0.9176470637321472,
+        0.929411768913269,
+        1.0
+      ],
+      "triangles": 21176,
+      "sha256": "3625cc15d5b8f0724c85bc71a8b03063ebbc686cdced684f692f1f128a617546"
+    },
+    "assets/visual/wheel_visual_2.obj": {
+      "source": "ppscout_ws-dev/src/third_party/scout_ros2/scout_description/meshes/wheel.dae",
+      "diffuse_rgba": [
+        0.29411765933036804,
+        0.29411765933036804,
+        0.29411765933036804,
+        1.0
+      ],
+      "triangles": 12414,
+      "sha256": "b09c210d5f7ca241ed9f2da81aa0c7656d5213b20aa0ccffc7f285c27733d7e2"
+    },
+    "assets/visual/piper_base_link_visual_0.obj": {
+      "source": "ppscout_ws-dev/src/third_party/agx_arm_urdf/piper/meshes/dae/base_link.dae",
+      "diffuse_rgba": [
+        0.113725,
+        0.113725,
+        0.113725,
+        1.0
+      ],
+      "triangles": 11040,
+      "sha256": "6d8d442d34461ae080b6ab9221eb0aee96ea41932babc1d02e33c8a1ec11cabb"
+    },
+    "assets/visual/piper_base_link_visual_1.obj": {
+      "source": "ppscout_ws-dev/src/third_party/agx_arm_urdf/piper/meshes/dae/base_link.dae",
+      "diffuse_rgba": [
+        0.0,
+        0.0,
+        0.0,
+        1.0
+      ],
+      "triangles": 1106,
+      "sha256": "0fc06aa1c301f7c01fd309eb5e81879c4c28c816c3bb06d8a644d057fcd19f3f"
+    },
+    "assets/collision/piper_base_link_hull.stl": {
+      "source": "ppscout_ws-dev/src/third_party/agx_arm_urdf/piper/meshes/base_link.stl",
+      "operation": "convex hull",
+      "triangles": 614,
+      "sha256": "be13abd9501d88ee4b6c3fdaa05861350d3677f4458e2ee8d133c63b9160d7af"
+    },
+    "assets/visual/link1_visual_0.obj": {
+      "source": "ppscout_ws-dev/src/third_party/agx_arm_urdf/piper/meshes/dae/link1.dae",
+      "diffuse_rgba": [
+        0.113725,
+        0.113725,
+        0.113725,
+        1.0
+      ],
+      "triangles": 8954,
+      "sha256": "0518d6db580927b9b21123bd0b083474ca106b1fcb0f6eaa8c63bfa89d25be77"
+    },
+    "assets/collision/link1_hull.stl": {
+      "source": "ppscout_ws-dev/src/third_party/agx_arm_urdf/piper/meshes/link1.stl",
+      "operation": "convex hull",
+      "triangles": 518,
+      "sha256": "0ab18a6ca202f88c599dd5cf286d494a3e9402b1af72275e4247461ced3d8e14"
+    },
+    "assets/visual/link2_visual_0.obj": {
+      "source": "ppscout_ws-dev/src/third_party/agx_arm_urdf/piper/meshes/dae/link2.dae",
+      "diffuse_rgba": [
+        0.113725,
+        0.113725,
+        0.113725,
+        1.0
+      ],
+      "triangles": 31863,
+      "sha256": "2875e7d619127c69c30d8f78366915c9f341f2796449523307855b71ef636a9e"
+    },
+    "assets/visual/link2_visual_1.obj": {
+      "source": "ppscout_ws-dev/src/third_party/agx_arm_urdf/piper/meshes/dae/link2.dae",
+      "diffuse_rgba": [
+        0.403922,
+        0.403922,
+        0.403922,
+        1.0
+      ],
+      "triangles": 27088,
+      "sha256": "9a6735b1c47f0597dafafbdc2ef7d5a144dc90a04ee24271586ae6eb9dd6da66"
+    },
+    "assets/visual/link2_visual_2.obj": {
+      "source": "ppscout_ws-dev/src/third_party/agx_arm_urdf/piper/meshes/dae/link2.dae",
+      "diffuse_rgba": [
+        0.854902,
+        0.121569,
+        0.121569,
+        1.0
+      ],
+      "triangles": 1514,
+      "sha256": "834f25864d064e517ff8396ad30fcb51abc8c72e7ac018d98dd24d91d2965ccd"
+    },
+    "assets/visual/link2_visual_3.obj": {
+      "source": "ppscout_ws-dev/src/third_party/agx_arm_urdf/piper/meshes/dae/link2.dae",
+      "diffuse_rgba": [
+        0.980392,
+        0.980392,
+        0.980392,
+        1.0
+      ],
+      "triangles": 2534,
+      "sha256": "0bf1f0e1c6533bc063d075a24a11cb2d22b13050abf206611fef1fc2b1b3e155"
+    },
+    "assets/visual/link2_visual_4.obj": {
+      "source": "ppscout_ws-dev/src/third_party/agx_arm_urdf/piper/meshes/dae/link2.dae",
+      "diffuse_rgba": [
+        0.058824,
+        0.058824,
+        0.058824,
+        1.0
+      ],
+      "triangles": 18208,
+      "sha256": "8c5323f619413c13f5a514c66160b519248b518460618a20a46eba0b645cdfd1"
+    },
+    "assets/visual/link2_visual_5.obj": {
+      "source": "ppscout_ws-dev/src/third_party/agx_arm_urdf/piper/meshes/dae/link2.dae",
+      "diffuse_rgba": [
+        0.901961,
+        0.901961,
+        0.901961,
+        1.0
+      ],
+      "triangles": 536,
+      "sha256": "b860f6af1f547f4921c5a36ea5056e8805dab4a1c90b27ee341391c4f15b5883"
+    },
+    "assets/visual/link2_visual_6.obj": {
+      "source": "ppscout_ws-dev/src/third_party/agx_arm_urdf/piper/meshes/dae/link2.dae",
+      "diffuse_rgba": [
+        0.745098,
+        0.745098,
+        0.745098,
+        1.0
+      ],
+      "triangles": 54,
+      "sha256": "ac0e23ebaccc558103c317813a974bd87779fa23f04ea4e4236d45f5d7595b45"
+    },
+    "assets/collision/link2_hull.stl": {
+      "source": "ppscout_ws-dev/src/third_party/agx_arm_urdf/piper/meshes/link2.stl",
+      "operation": "convex hull",
+      "triangles": 1474,
+      "sha256": "e73a2a0531274b643371d28d4b8a3ae579bd7600706bda0848730e6f03cc9048"
+    },
+    "assets/visual/link3_visual_0.obj": {
+      "source": "ppscout_ws-dev/src/third_party/agx_arm_urdf/piper/meshes/dae/link3.dae",
+      "diffuse_rgba": [
+        0.121569,
+        0.121569,
+        0.121569,
+        1.0
+      ],
+      "triangles": 10706,
+      "sha256": "6b066a3052e7f318bca743f2fef66973fd98fa5120cbf7ffe9f8b261c48b28f0"
+    },
+    "assets/visual/link3_visual_1.obj": {
+      "source": "ppscout_ws-dev/src/third_party/agx_arm_urdf/piper/meshes/dae/link3.dae",
+      "diffuse_rgba": [
+        0.980392,
+        0.980392,
+        0.980392,
+        1.0
+      ],
+      "triangles": 1678,
+      "sha256": "d0eedda3c35bf9c6c9506fcf4a23522f409b8dfb74f784b0d560f3e7b456125e"
+    },
+    "assets/visual/link3_visual_2.obj": {
+      "source": "ppscout_ws-dev/src/third_party/agx_arm_urdf/piper/meshes/dae/link3.dae",
+      "diffuse_rgba": [
+        0.4,
+        0.4,
+        0.4,
+        1.0
+      ],
+      "triangles": 20658,
+      "sha256": "f947e32ce39dab44c504dd60c851280ca0c1c8870732eccbd65cf73bf63f7fc4"
+    },
+    "assets/visual/link3_visual_3.obj": {
+      "source": "ppscout_ws-dev/src/third_party/agx_arm_urdf/piper/meshes/dae/link3.dae",
+      "diffuse_rgba": [
+        0.901961,
+        0.901961,
+        0.901961,
+        1.0
+      ],
+      "triangles": 849,
+      "sha256": "82cd5b3a9421215bcff3faa6c6e30458875a9d38e2ebe23d072ed366e5cc9d4e"
+    },
+    "assets/visual/link3_visual_4.obj": {
+      "source": "ppscout_ws-dev/src/third_party/agx_arm_urdf/piper/meshes/dae/link3.dae",
+      "diffuse_rgba": [
+        0.780392,
+        0.168627,
+        0.168627,
+        1.0
+      ],
+      "triangles": 34,
+      "sha256": "51e20db25748cf7b6b6a7e95478a1ceb73f6bee5fe629557fbb33b90ae3df50d"
+    },
+    "assets/visual/link3_visual_5.obj": {
+      "source": "ppscout_ws-dev/src/third_party/agx_arm_urdf/piper/meshes/dae/link3.dae",
+      "diffuse_rgba": [
+        0.058824,
+        0.058824,
+        0.058824,
+        1.0
+      ],
+      "triangles": 2989,
+      "sha256": "94fa6ca437cd593954670cee0802a9ef911c7da19371be2d22406cc7f735fbb6"
+    },
+    "assets/collision/link3_hull.stl": {
+      "source": "ppscout_ws-dev/src/third_party/agx_arm_urdf/piper/meshes/link3.stl",
+      "operation": "convex hull",
+      "triangles": 634,
+      "sha256": "a90b6afa8f89b70a78602c3010ed9aea5f874c9f3d354b320d7dd03a342cf6f2"
+    },
+    "assets/visual/link4_visual_0.obj": {
+      "source": "ppscout_ws-dev/src/third_party/agx_arm_urdf/piper/meshes/dae/link4.dae",
+      "diffuse_rgba": [
+        0.113725,
+        0.113725,
+        0.113725,
+        1.0
+      ],
+      "triangles": 17558,
+      "sha256": "b3799a2def71f29cbc908dbbdada1d55f83a6f9df7fa1e80dcee7ec3946bb4ea"
+    },
+    "assets/collision/link4_hull.stl": {
+      "source": "ppscout_ws-dev/src/third_party/agx_arm_urdf/piper/meshes/link4.stl",
+      "operation": "convex hull",
+      "triangles": 1504,
+      "sha256": "de51c5f2a25ffa37d55ad96adb875bd7eef46cf09710d9eadbab576066fa9e95"
+    },
+    "assets/visual/link5_visual_0.obj": {
+      "source": "ppscout_ws-dev/src/third_party/agx_arm_urdf/piper/meshes/dae/link5.dae",
+      "diffuse_rgba": [
+        0.117647,
+        0.117647,
+        0.117647,
+        1.0
+      ],
+      "triangles": 16144,
+      "sha256": "dcc4a53ac329e96485bde15098ffa7939286837adcf94e6f96909f4a52848560"
+    },
+    "assets/visual/link5_visual_1.obj": {
+      "source": "ppscout_ws-dev/src/third_party/agx_arm_urdf/piper/meshes/dae/link5.dae",
+      "diffuse_rgba": [
+        0.0,
+        0.0,
+        0.0,
+        1.0
+      ],
+      "triangles": 528,
+      "sha256": "97988c750063b858b243a3e27290d83916d1363fac1ec80a41f98495b5db7086"
+    },
+    "assets/collision/link5_hull.stl": {
+      "source": "ppscout_ws-dev/src/third_party/agx_arm_urdf/piper/meshes/link5.stl",
+      "operation": "convex hull",
+      "triangles": 1344,
+      "sha256": "005d20ac40324fe13ac2e33aa45da1dfb71b098c61c2f8d6a9fc2a7b97ec59d4"
+    },
+    "assets/visual/link6_visual_0.obj": {
+      "source": "ppscout_ws-dev/src/third_party/agx_arm_urdf/piper/meshes/dae/link6.dae",
+      "diffuse_rgba": [
+        0.117647,
+        0.117647,
+        0.117647,
+        1.0
+      ],
+      "triangles": 1176,
+      "sha256": "1842556a226fe4365675b6e1b12a8a9b76580d593eaaeebdf7049d708d1d15ae"
+    },
+    "assets/collision/link6_hull.stl": {
+      "source": "ppscout_ws-dev/src/third_party/agx_arm_urdf/piper/meshes/link6.stl",
+      "operation": "convex hull",
+      "triangles": 158,
+      "sha256": "b9745ea83ef47c3f29b745313836efbbc837438e153cef15b899f549c31b404d"
+    },
+    "assets/visual/flange_link_visual_0.obj": {
+      "source": "ppscout_ws-dev/src/third_party/agx_arm_urdf/piper/meshes/dae/flange.dae",
+      "diffuse_rgba": [
+        0.1144346,
+        0.1144355,
+        0.1144354,
+        1.0
+      ],
+      "triangles": 4090,
+      "sha256": "44b359f40be6addd2913ffd298a4ffbd1f8c828de2b9d6a3d59253cf9b14b231"
+    },
+    "assets/collision/flange_link_hull.stl": {
+      "source": "ppscout_ws-dev/src/third_party/agx_arm_urdf/piper/meshes/flange.stl",
+      "operation": "convex hull",
+      "triangles": 724,
+      "sha256": "be19be4548d9c9e113fa6fc10f004da373094c64e00e6e83c90c56e5bdb519e9"
+    },
+    "assets/visual/gripper_base_visual_0.obj": {
+      "source": "ppscout_ws-dev/src/third_party/agx_arm_urdf/piper/meshes/dae/gripper_base.dae",
+      "diffuse_rgba": [
+        0.1144346,
+        0.1144355,
+        0.1144354,
+        1.0
+      ],
+      "triangles": 32940,
+      "sha256": "7ca532ca682debf7ef3d0a4731becd0d21d8e070456188e33c0b024779debb24"
+    },
+    "assets/visual/gripper_base_visual_1.obj": {
+      "source": "ppscout_ws-dev/src/third_party/agx_arm_urdf/piper/meshes/dae/gripper_base.dae",
+      "diffuse_rgba": [
+        0.784314,
+        0.784314,
+        0.784314,
+        1.0
+      ],
+      "triangles": 3816,
+      "sha256": "d8956780eaf94eea0aa494845cd977d5282dc7cfe9b480d7cbdedaebd93fe192"
+    },
+    "assets/collision/gripper_base_hull.stl": {
+      "source": "ppscout_ws-dev/src/third_party/agx_arm_urdf/piper/meshes/gripper_base.stl",
+      "operation": "convex hull",
+      "triangles": 752,
+      "sha256": "adef0f3f808e3ca262f9b61b2e32e05b1fb7562e465e6305002c2a9c896793a0"
+    },
+    "assets/visual/gripper_link1_visual_0.obj": {
+      "source": "ppscout_ws-dev/src/third_party/agx_arm_urdf/piper/meshes/dae/gripper_link1.dae",
+      "diffuse_rgba": [
+        0.0,
+        0.0,
+        0.0,
+        1.0
+      ],
+      "triangles": 504,
+      "sha256": "6ab3f6844c144f8a5b36a4f6392e2bbebe87f5b4a5f4e5f4907349dc34d4af0e"
+    },
+    "assets/visual/gripper_link1_visual_1.obj": {
+      "source": "ppscout_ws-dev/src/third_party/agx_arm_urdf/piper/meshes/dae/gripper_link1.dae",
+      "diffuse_rgba": [
+        0.117647,
+        0.117647,
+        0.117647,
+        1.0
+      ],
+      "triangles": 1578,
+      "sha256": "7412ac55ad80072957d71a5940391c1817e65737771ae119889b91d814a14804"
+    },
+    "assets/visual/gripper_link1_visual_2.obj": {
+      "source": "ppscout_ws-dev/src/third_party/agx_arm_urdf/piper/meshes/dae/gripper_link1.dae",
+      "diffuse_rgba": [
+        0.980392,
+        0.980392,
+        0.980392,
+        1.0
+      ],
+      "triangles": 4,
+      "sha256": "8ea90e0002529134f44c63e1312a00345d0d19e6a2d9cdc1caf543eefab044ee"
+    },
+    "assets/collision/gripper_link1_hull.stl": {
+      "source": "ppscout_ws-dev/src/third_party/agx_arm_urdf/piper/meshes/gripper_link1.stl",
+      "operation": "convex hull",
+      "triangles": 240,
+      "sha256": "5779f36acf2c4b05995ea6ad4d9e4cadeed4c9587c985939e2a666296522d536"
+    },
+    "assets/visual/gripper_link2_visual_0.obj": {
+      "source": "ppscout_ws-dev/src/third_party/agx_arm_urdf/piper/meshes/dae/gripper_link2.dae",
+      "diffuse_rgba": [
+        0.0,
+        0.0,
+        0.0,
+        1.0
+      ],
+      "triangles": 504,
+      "sha256": "6ab3f6844c144f8a5b36a4f6392e2bbebe87f5b4a5f4e5f4907349dc34d4af0e"
+    },
+    "assets/visual/gripper_link2_visual_1.obj": {
+      "source": "ppscout_ws-dev/src/third_party/agx_arm_urdf/piper/meshes/dae/gripper_link2.dae",
+      "diffuse_rgba": [
+        0.117647,
+        0.117647,
+        0.117647,
+        1.0
+      ],
+      "triangles": 1578,
+      "sha256": "7412ac55ad80072957d71a5940391c1817e65737771ae119889b91d814a14804"
+    },
+    "assets/visual/gripper_link2_visual_2.obj": {
+      "source": "ppscout_ws-dev/src/third_party/agx_arm_urdf/piper/meshes/dae/gripper_link2.dae",
+      "diffuse_rgba": [
+        0.980392,
+        0.980392,
+        0.980392,
+        1.0
+      ],
+      "triangles": 4,
+      "sha256": "8ea90e0002529134f44c63e1312a00345d0d19e6a2d9cdc1caf543eefab044ee"
+    },
+    "assets/collision/gripper_link2_hull.stl": {
+      "source": "ppscout_ws-dev/src/third_party/agx_arm_urdf/piper/meshes/gripper_link2.stl",
+      "operation": "convex hull",
+      "triangles": 240,
+      "sha256": "a90c8bdaa81925eb7be3885fe9a7bc2cb1c5dccd9a841ee6443b5a3282b699f8"
+    }
+  },
+  "inertials": {
+    "base_link": {
+      "source": "ppscout_ws-dev/src/third_party/scout_ros2/scout_description/urdf/model.xacro",
+      "mass_kg": 60.0,
+      "source_com_m": [
+        0.0,
+        0.0,
+        0.0
+      ],
+      "source_tensor_kg_m2": [
+        [
+          3.4314650000071465,
+          -4.197826948865079e-06,
+          -6.143475940198838e-06
+        ],
+        [
+          -4.1978269488650805e-06,
+          2.288641000015419,
+          2.2566200224409134e-11
+        ],
+        [
+          -6.143475940198835e-06,
+          2.2566200224409137e-11,
+          5.103975999977432
+        ]
+      ],
+      "mesh_bounds_m": [
+        [
+          -0.26260404978817686,
+          -0.19493828569746705,
+          -0.11318235977101018
+        ],
+        [
+          0.2980035248596214,
+          0.1949379011475895,
+          0.06899988821111246
+        ]
+      ],
+      "source_variance_m2": [
+        0.033009599999880866,
+        0.05205666666640966,
+        0.005134416667042781
+      ],
+      "variance_bound_m2": [
+        0.07825693247928822,
+        0.03800086026717339,
+        0.007809570171669614
+      ],
+      "rejection_reasons": [
+        "COM variance exceeds mesh support bound"
+      ],
+      "method": "uniform-density convex hull at source mass",
+      "com_m": [
+        0.008897994568177494,
+        -3.0705727670597625e-07,
+        -0.024798559900768187
+      ],
+      "tensor_kg_m2": [
+        [
+          0.8158187987028498,
+          8.694168916206938e-07,
+          -0.00422123412355869
+        ],
+        [
+          8.694168916206938e-07,
+          1.4756571879015725,
+          7.360140710388805e-07
+        ],
+        [
+          -0.00422123412355869,
+          7.360140710388805e-07,
+          1.9850885207745792
+        ]
+      ]
+    },
+    "front_left_wheel_link": {
+      "source": "ppscout_ws-dev/src/third_party/scout_ros2/scout_description/urdf/model.xacro",
+      "mass_kg": 3.0,
+      "source_com_m": [
+        0.0,
+        0.0,
+        0.0
+      ],
+      "source_tensor_kg_m2": [
+        [
+          0.7171,
+          0.0,
+          0.0
+        ],
+        [
+          0.0,
+          0.7171,
+          0.0
+        ],
+        [
+          0.0,
+          0.0,
+          0.1361
+        ]
+      ],
+      "mesh_bounds_m": [
+        [
+          -0.0799558013677597,
+          -0.08099508285522461,
+          -0.04699498042464256
+        ],
+        [
+          0.07994069904088974,
+          0.07895822077989578,
+          0.085005022585392
+        ]
+      ],
+      "source_variance_m2": [
+        0.02268333333333335,
+        0.02268333333333335,
+        0.21635000000000001
+      ],
+      "variance_bound_m2": [
+        0.006391722653713239,
+        0.006395227634168776,
+        0.003994809372396796
+      ],
+      "rejection_reasons": [
+        "COM variance exceeds mesh support bound"
+      ],
+      "method": "uniform-density convex hull at source mass",
+      "com_m": [
+        -2.287265982588477e-07,
+        -0.0009945598166598067,
+        0.03292428701087865
+      ],
+      "tensor_kg_m2": [
+        [
+          0.006723432059362829,
+          8.875580526126227e-08,
+          -3.431717501004637e-08
+        ],
+        [
+          8.875580526126227e-08,
+          0.0067232262850299655,
+          -2.1648626778029812e-07
+        ],
+        [
+          -3.431717501004637e-08,
+          -2.1648626778029812e-07,
+          0.008354462956295907
+        ]
+      ]
+    },
+    "front_right_wheel_link": {
+      "source": "ppscout_ws-dev/src/third_party/scout_ros2/scout_description/urdf/model.xacro",
+      "mass_kg": 3.0,
+      "source_com_m": [
+        0.0,
+        0.0,
+        0.0
+      ],
+      "source_tensor_kg_m2": [
+        [
+          0.7171,
+          0.0,
+          0.0
+        ],
+        [
+          0.0,
+          0.7171,
+          0.0
+        ],
+        [
+          0.0,
+          0.0,
+          0.1361
+        ]
+      ],
+      "mesh_bounds_m": [
+        [
+          -0.0799558013677597,
+          -0.08099508285522461,
+          -0.04699498042464256
+        ],
+        [
+          0.07994069904088974,
+          0.07895822077989578,
+          0.085005022585392
+        ]
+      ],
+      "source_variance_m2": [
+        0.02268333333333335,
+        0.02268333333333335,
+        0.21635000000000001
+      ],
+      "variance_bound_m2": [
+        0.006391722653713239,
+        0.006395227634168776,
+        0.003994809372396796
+      ],
+      "rejection_reasons": [
+        "COM variance exceeds mesh support bound"
+      ],
+      "method": "uniform-density convex hull at source mass",
+      "com_m": [
+        -2.287265982588477e-07,
+        -0.0009945598166598067,
+        0.03292428701087865
+      ],
+      "tensor_kg_m2": [
+        [
+          0.006723432059362829,
+          8.875580526126227e-08,
+          -3.431717501004637e-08
+        ],
+        [
+          8.875580526126227e-08,
+          0.0067232262850299655,
+          -2.1648626778029812e-07
+        ],
+        [
+          -3.431717501004637e-08,
+          -2.1648626778029812e-07,
+          0.008354462956295907
+        ]
+      ]
+    },
+    "rear_left_wheel_link": {
+      "source": "ppscout_ws-dev/src/third_party/scout_ros2/scout_description/urdf/model.xacro",
+      "mass_kg": 3.0,
+      "source_com_m": [
+        0.0,
+        0.0,
+        0.0
+      ],
+      "source_tensor_kg_m2": [
+        [
+          0.7171,
+          0.0,
+          0.0
+        ],
+        [
+          0.0,
+          0.7171,
+          0.0
+        ],
+        [
+          0.0,
+          0.0,
+          0.1361
+        ]
+      ],
+      "mesh_bounds_m": [
+        [
+          -0.0799558013677597,
+          -0.08099508285522461,
+          -0.04699498042464256
+        ],
+        [
+          0.07994069904088974,
+          0.07895822077989578,
+          0.085005022585392
+        ]
+      ],
+      "source_variance_m2": [
+        0.02268333333333335,
+        0.02268333333333335,
+        0.21635000000000001
+      ],
+      "variance_bound_m2": [
+        0.006391722653713239,
+        0.006395227634168776,
+        0.003994809372396796
+      ],
+      "rejection_reasons": [
+        "COM variance exceeds mesh support bound"
+      ],
+      "method": "uniform-density convex hull at source mass",
+      "com_m": [
+        -2.287265982588477e-07,
+        -0.0009945598166598067,
+        0.03292428701087865
+      ],
+      "tensor_kg_m2": [
+        [
+          0.006723432059362829,
+          8.875580526126227e-08,
+          -3.431717501004637e-08
+        ],
+        [
+          8.875580526126227e-08,
+          0.0067232262850299655,
+          -2.1648626778029812e-07
+        ],
+        [
+          -3.431717501004637e-08,
+          -2.1648626778029812e-07,
+          0.008354462956295907
+        ]
+      ]
+    },
+    "rear_right_wheel_link": {
+      "source": "ppscout_ws-dev/src/third_party/scout_ros2/scout_description/urdf/model.xacro",
+      "mass_kg": 3.0,
+      "source_com_m": [
+        0.0,
+        0.0,
+        0.0
+      ],
+      "source_tensor_kg_m2": [
+        [
+          0.7171,
+          0.0,
+          0.0
+        ],
+        [
+          0.0,
+          0.7171,
+          0.0
+        ],
+        [
+          0.0,
+          0.0,
+          0.1361
+        ]
+      ],
+      "mesh_bounds_m": [
+        [
+          -0.0799558013677597,
+          -0.08099508285522461,
+          -0.04699498042464256
+        ],
+        [
+          0.07994069904088974,
+          0.07895822077989578,
+          0.085005022585392
+        ]
+      ],
+      "source_variance_m2": [
+        0.02268333333333335,
+        0.02268333333333335,
+        0.21635000000000001
+      ],
+      "variance_bound_m2": [
+        0.006391722653713239,
+        0.006395227634168776,
+        0.003994809372396796
+      ],
+      "rejection_reasons": [
+        "COM variance exceeds mesh support bound"
+      ],
+      "method": "uniform-density convex hull at source mass",
+      "com_m": [
+        -2.287265982588477e-07,
+        -0.0009945598166598067,
+        0.03292428701087865
+      ],
+      "tensor_kg_m2": [
+        [
+          0.006723432059362829,
+          8.875580526126227e-08,
+          -3.431717501004637e-08
+        ],
+        [
+          8.875580526126227e-08,
+          0.0067232262850299655,
+          -2.1648626778029812e-07
+        ],
+        [
+          -3.431717501004637e-08,
+          -2.1648626778029812e-07,
+          0.008354462956295907
+        ]
+      ]
+    },
+    "piper_base_link": {
+      "source": "ppscout_ws-dev/src/ppscout_description/urdf/piper_description_scout.urdf",
+      "mass_kg": 1.02,
+      "source_com_m": [
+        -0.00473641164191482,
+        2.56829134630247e-05,
+        0.041451518036016
+      ],
+      "source_tensor_kg_m2": [
+        [
+          0.00267433,
+          -7.3e-07,
+          -0.00017389
+        ],
+        [
+          -7.3e-07,
+          0.00282612,
+          4e-07
+        ],
+        [
+          -0.00017389,
+          4e-07,
+          0.00089624
+        ]
+      ],
+      "mesh_bounds_m": [
+        [
+          -0.05849999934434891,
+          -0.03999999910593033,
+          -6.2145459035649554e-18
+        ],
+        [
+          0.03999999910593033,
+          0.03999999910593033,
+          0.0860000029206276
+        ]
+      ],
+      "source_variance_m2": [
+        0.0005137401960784314,
+        0.00036492647058823516,
+        0.00225696568627451
+      ],
+      "variance_bound_m2": [
+        0.0024051899427338878,
+        0.001599999268862383,
+        0.001846602324671664
+      ],
+      "rejection_reasons": [
+        "COM variance exceeds mesh support bound"
+      ],
+      "method": "uniform-density convex hull at source mass",
+      "com_m": [
+        -0.008951229399233861,
+        2.88378201499662e-07,
+        0.04020750429361572
+      ],
+      "tensor_kg_m2": [
+        [
+          0.0010572545168941877,
+          9.12331539927762e-09,
+          4.169002674559544e-06
+        ],
+        [
+          9.12331539927762e-09,
+          0.0013137190904177183,
+          -6.627011638318539e-09
+        ],
+        [
+          4.169002674559544e-06,
+          -6.627011638318539e-09,
+          0.001159491984588387
+        ]
+      ]
+    },
+    "link1": {
+      "source": "ppscout_ws-dev/src/ppscout_description/urdf/piper_description_scout.urdf",
+      "mass_kg": 0.71,
+      "source_com_m": [
+        0.00032,
+        -0.00041,
+        -0.00348
+      ],
+      "source_tensor_kg_m2": [
+        [
+          0.00050027,
+          7.8e-07,
+          6.26e-06
+        ],
+        [
+          7.8e-07,
+          0.00040879,
+          4.62e-06
+        ],
+        [
+          6.26e-06,
+          4.62e-06,
+          0.00045802
+        ]
+      ],
+      "mesh_bounds_m": [
+        [
+          -0.03587707504630089,
+          -0.03674999997019768,
+          -0.0430000014603138
+        ],
+        [
+          0.03598610684275627,
+          0.04075000062584877,
+          0.02999998815357685
+        ]
+      ],
+      "source_variance_m2": [
+        0.00025812676056338036,
+        0.00038697183098591556,
+        0.0003176338028169015
+      ],
+      "variance_bound_m2": [
+        0.0012910087459966344,
+        0.0014957544215166807,
+        0.0013231291807206458
+      ],
+      "rejection_reasons": [],
+      "method": "source unchanged (tensor rotated into link frame)",
+      "com_m": [
+        0.00032,
+        -0.00041,
+        -0.00348
+      ],
+      "tensor_kg_m2": [
+        [
+          0.00050027,
+          7.8e-07,
+          6.26e-06
+        ],
+        [
+          7.8e-07,
+          0.00040879,
+          4.62e-06
+        ],
+        [
+          6.26e-06,
+          4.62e-06,
+          0.00045802
+        ]
+      ]
+    },
+    "link2": {
+      "source": "ppscout_ws-dev/src/ppscout_description/urdf/piper_description_scout.urdf",
+      "mass_kg": 1.16,
+      "source_com_m": [
+        0.21852,
+        -0.00861,
+        0.00126
+      ],
+      "source_tensor_kg_m2": [
+        [
+          0.00111915,
+          0.00182916,
+          0.00019233
+        ],
+        [
+          0.00182916,
+          0.06763251,
+          7.67e-06
+        ],
+        [
+          0.00019233,
+          7.67e-06,
+          0.067559
+        ]
+      ],
+      "mesh_bounds_m": [
+        [
+          -0.03146318718791008,
+          -0.06481322646141052,
+          -0.048500001430511475
+        ],
+        [
+          0.3165076673030853,
+          0.03171728178858757,
+          0.048500001430511475
+        ]
+      ],
+      "source_variance_m2": [
+        0.057789810344827594,
+        0.0004507068965517184,
+        0.0005140775862069018
+      ],
+      "variance_bound_m2": [
+        0.024495269377533838,
+        0.0022665233509371035,
+        0.002350662538759615
+      ],
+      "rejection_reasons": [
+        "COM variance exceeds mesh support bound"
+      ],
+      "method": "uniform-density convex hull at source mass",
+      "com_m": [
+        0.14803720527847536,
+        -0.006438293285870046,
+        2.191375877421286e-09
+      ],
+      "tensor_kg_m2": [
+        [
+          0.001423445559067197,
+          0.00023638196082368713,
+          -4.605107692697587e-11
+        ],
+        [
+          0.00023638196082368713,
+          0.010980239878339213,
+          1.1537642889503898e-10
+        ],
+        [
+          -4.605107692697587e-11,
+          1.1537642889503898e-10,
+          0.010713641868050206
+        ]
+      ]
+    },
+    "link3": {
+      "source": "ppscout_ws-dev/src/ppscout_description/urdf/piper_description_scout.urdf",
+      "mass_kg": 0.5,
+      "source_com_m": [
+        -0.01999,
+        -0.14808,
+        -0.00053
+      ],
+      "source_tensor_kg_m2": [
+        [
+          0.01347608,
+          0.00161034,
+          6.6e-07
+        ],
+        [
+          0.00161034,
+          0.00046377,
+          1.62e-06
+        ],
+        [
+          6.6e-07,
+          1.62e-06,
+          0.01363321
+        ]
+      ],
+      "mesh_bounds_m": [
+        [
+          -0.056133970618247986,
+          -0.2147519439458847,
+          -0.03999999910593033
+        ],
+        [
+          0.029916904866695404,
+          0.029969824478030205,
+          0.04075000062584877
+        ]
+      ],
+      "source_variance_m2": [
+        0.0006209000000000006,
+        0.02664552,
+        0.0003066400000000004
+      ],
+      "variance_bound_m2": [
+        0.0018038337031495361,
+        0.011870927917173842,
+        0.0016293215877950544
+      ],
+      "rejection_reasons": [
+        "COM variance exceeds mesh support bound"
+      ],
+      "method": "uniform-density convex hull at source mass",
+      "com_m": [
+        -0.010982877867705007,
+        -0.08512451037941476,
+        4.376042740411114e-05
+      ],
+      "tensor_kg_m2": [
+        [
+          0.0023734862525778802,
+          -0.0002355937653388674,
+          -1.4627895218606807e-07
+        ],
+        [
+          -0.0002355937653388674,
+          0.00037135339394633144,
+          -1.5678990365022136e-06
+        ],
+        [
+          -1.4627895218606807e-07,
+          -1.5678990365022136e-06,
+          0.002349711368657582
+        ]
+      ]
+    },
+    "link4": {
+      "source": "ppscout_ws-dev/src/ppscout_description/urdf/piper_description_scout.urdf",
+      "mass_kg": 0.38,
+      "source_com_m": [
+        0.00013,
+        -0.00076,
+        -0.00394
+      ],
+      "source_tensor_kg_m2": [
+        [
+          0.00017844,
+          6.2e-07,
+          6.7e-07
+        ],
+        [
+          6.2e-07,
+          0.00018914,
+          4.08e-06
+        ],
+        [
+          6.7e-07,
+          4.08e-06,
+          0.00014613
+        ]
+      ],
+      "mesh_bounds_m": [
+        [
+          -0.03286784887313843,
+          -0.028496520593762398,
+          -0.035999998450279236
+        ],
+        [
+          0.02984265610575676,
+          0.03258347883820534,
+          0.02844819240272045
+        ]
+      ],
+      "source_variance_m2": [
+        0.00020635526315789473,
+        0.00017819736842105267,
+        0.0002913815789473684
+      ],
+      "variance_bound_m2": [
+        0.000980453735797295,
+        0.000924832087463563,
+        0.0010383653982385633
+      ],
+      "rejection_reasons": [],
+      "method": "source unchanged (tensor rotated into link frame)",
+      "com_m": [
+        0.00013,
+        -0.00076,
+        -0.00394
+      ],
+      "tensor_kg_m2": [
+        [
+          0.00017844,
+          6.2e-07,
+          6.7e-07
+        ],
+        [
+          6.2e-07,
+          0.00018914,
+          4.08e-06
+        ],
+        [
+          6.7e-07,
+          4.08e-06,
+          0.00014613
+        ]
+      ]
+    },
+    "link5": {
+      "source": "ppscout_ws-dev/src/ppscout_description/urdf/piper_description_scout.urdf",
+      "mass_kg": 0.383,
+      "source_com_m": [
+        0.00018,
+        -0.06104,
+        -0.00227
+      ],
+      "source_tensor_kg_m2": [
+        [
+          0.00172318,
+          2.59e-06,
+          1e-07
+        ],
+        [
+          2.59e-06,
+          0.00017936,
+          9.9e-06
+        ],
+        [
+          1e-07,
+          9.9e-06,
+          0.00171172
+        ]
+      ],
+      "mesh_bounds_m": [
+        [
+          -0.029980840161442757,
+          -0.09000000357627869,
+          -0.03241652250289917
+        ],
+        [
+          0.029980994760990143,
+          0.023478712886571884,
+          0.02850000001490116
+        ]
+      ],
+      "source_variance_m2": [
+        0.00021919060052219308,
+        0.004250052219321149,
+        0.0002491122715404699
+      ],
+      "variance_bound_m2": [
+        0.0008988230396382167,
+        0.0024476622274575933,
+        0.0009276084978634256
+      ],
+      "rejection_reasons": [
+        "COM variance exceeds mesh support bound"
+      ],
+      "method": "uniform-density convex hull at source mass",
+      "com_m": [
+        -6.5558109411806295e-06,
+        -0.04317305499188403,
+        -0.005417597887866444
+      ],
+      "tensor_kg_m2": [
+        [
+          0.00037610683899352767,
+          4.8238190953174824e-08,
+          6.067675064654589e-09
+        ],
+        [
+          4.8238190953174824e-08,
+          0.0001753792414768752,
+          5.5418490005687085e-05
+        ],
+        [
+          6.067675064654589e-09,
+          5.5418490005687085e-05,
+          0.0003704806356773695
+        ]
+      ]
+    },
+    "link6": {
+      "source": "ppscout_ws-dev/src/ppscout_description/urdf/piper_description_scout.urdf",
+      "mass_kg": 0.007,
+      "source_com_m": [
+        -3e-05,
+        6e-05,
+        -0.002
+      ],
+      "source_tensor_kg_m2": [
+        [
+          0.00152112,
+          2.02e-06,
+          2.61e-06
+        ],
+        [
+          2.02e-06,
+          0.00138626,
+          2e-08
+        ],
+        [
+          2.61e-06,
+          2e-08,
+          0.00031152
+        ]
+      ],
+      "mesh_bounds_m": [
+        [
+          -0.017531512305140495,
+          -0.017476746812462807,
+          -0.004000000189989805
+        ],
+        [
+          0.017411740496754646,
+          0.017494866624474525,
+          1.3877787807814457e-17
+        ]
+      ],
+      "source_variance_m2": [
+        0.012618571428571455,
+        0.031884285714285726,
+        0.18541857142857143
+      ],
+      "variance_bound_m2": [
+        0.00030525683592701875,
+        0.0003057508417024678,
+        4.000000379979638e-06
+      ],
+      "rejection_reasons": [
+        "COM variance exceeds mesh support bound"
+      ],
+      "method": "uniform-density convex hull at source mass",
+      "com_m": [
+        -8.94485493017313e-05,
+        8.424275600796407e-06,
+        -0.0020000000949949
+      ],
+      "tensor_kg_m2": [
+        [
+          5.429529314075581e-07,
+          -6.842227437872714e-11,
+          -5.182933049965877e-23
+        ],
+        [
+          -6.842227437872714e-11,
+          5.430444677543503e-07,
+          -6.185858262036676e-23
+        ],
+        [
+          -5.182933049965877e-23,
+          -6.185858262036676e-23,
+          1.0673307307220035e-06
+        ]
+      ]
+    },
+    "flange_link": {
+      "source": "ppscout_ws-dev/src/ppscout_description/urdf/piper_with_gripper_scout.xacro",
+      "mass_kg": 0.04,
+      "source_com_m": [
+        0.001151691,
+        0.000782428,
+        0.004798051
+      ],
+      "source_tensor_kg_m2": [
+        [
+          9.935389e-06,
+          0.0,
+          0.0
+        ],
+        [
+          0.0,
+          1.0508003e-05,
+          0.0
+        ],
+        [
+          0.0,
+          0.0,
+          1.9652873e-05
+        ]
+      ],
+      "mesh_bounds_m": [
+        [
+          -0.02850000187754631,
+          -0.028490856289863586,
+          0.0
+        ],
+        [
+          0.028490856289863586,
+          0.028490856289863586,
+          0.010500000789761543
+        ]
+      ],
+      "source_variance_m2": [
+        0.0002528185875,
+        0.00023850323750000002,
+        9.88148750000005e-06
+      ],
+      "variance_bound_m2": [
+        0.0008106525327035094,
+        0.0008111166985544755,
+        2.7358245890715163e-05
+      ],
+      "rejection_reasons": [],
+      "method": "source unchanged (tensor rotated into link frame)",
+      "com_m": [
+        0.001151691,
+        0.000782428,
+        0.004798051
+      ],
+      "tensor_kg_m2": [
+        [
+          9.935389e-06,
+          0.0,
+          0.0
+        ],
+        [
+          0.0,
+          1.0508003e-05,
+          0.0
+        ],
+        [
+          0.0,
+          0.0,
+          1.9652873e-05
+        ]
+      ]
+    },
+    "gripper_base": {
+      "source": "ppscout_ws-dev/src/ppscout_description/urdf/piper_with_gripper_scout.xacro",
+      "mass_kg": 0.45,
+      "source_com_m": [
+        -0.000183807162235591,
+        8.05033155577911e-05,
+        0.0321436689908876
+      ],
+      "source_tensor_kg_m2": [
+        [
+          0.00092934,
+          3.4e-07,
+          -7.38e-06
+        ],
+        [
+          3.4e-07,
+          0.00071447,
+          5e-08
+        ],
+        [
+          -7.38e-06,
+          5e-08,
+          0.00039442
+        ]
+      ],
+      "mesh_bounds_m": [
+        [
+          -0.04201316833496094,
+          -0.08201403170824051,
+          -2.2205088043847354e-06
+        ],
+        [
+          0.03298286348581314,
+          0.08206862211227417,
+          0.0649978518486023
+        ]
+      ],
+      "source_variance_m2": [
+        0.00019949999999999986,
+        0.0006769888888888886,
+        0.001388211111111111
+      ],
+      "variance_bound_m2": [
+        0.001387340645434059,
+        0.0067307764900923685,
+        0.0010561269317467712
+      ],
+      "rejection_reasons": [
+        "COM variance exceeds mesh support bound"
+      ],
+      "method": "uniform-density convex hull at source mass",
+      "com_m": [
+        -0.0018309028200962029,
+        3.6020256909443735e-05,
+        0.03801496423432533
+      ],
+      "tensor_kg_m2": [
+        [
+          0.0006554781533024038,
+          -2.0312584298326544e-06,
+          4.3793969142856445e-06
+        ],
+        [
+          -2.0312584298326544e-06,
+          0.00022259005825556885,
+          -2.1350374631730873e-08
+        ],
+        [
+          4.3793969142856445e-06,
+          -2.1350374631730873e-08,
+          0.0006412168399900235
+        ]
+      ]
+    },
+    "gripper_link1": {
+      "source": "ppscout_ws-dev/src/ppscout_description/urdf/piper_with_gripper_scout.xacro",
+      "mass_kg": 0.025,
+      "source_com_m": [
+        0.00065123185041968,
+        -0.0491929869131989,
+        0.00972258769184025
+      ],
+      "source_tensor_kg_m2": [
+        [
+          7.371e-05,
+          -1.13e-06,
+          2.1e-07
+        ],
+        [
+          -1.13e-06,
+          7.81e-06,
+          -1.372e-05
+        ],
+        [
+          2.1e-07,
+          -1.372e-05,
+          7.47e-05
+        ]
+      ],
+      "mesh_bounds_m": [
+        [
+          -0.02800000086426735,
+          -0.07649999856948853,
+          -5.715404442435145e-20
+        ],
+        [
+          0.02800000086426735,
+          2.7755575615628914e-17,
+          0.026499999687075615
+        ]
+      ],
+      "source_variance_m2": [
+        0.00017599999999999994,
+        0.002812,
+        0.00013639999999999985
+      ],
+      "variance_bound_m2": [
+        0.0007835759454759713,
+        0.0013433134670464261,
+        0.00016311985936580834
+      ],
+      "rejection_reasons": [
+        "COM variance exceeds mesh support bound"
+      ],
+      "method": "uniform-density convex hull at source mass",
+      "com_m": [
+        0.00025555509754996683,
+        -0.04862562249031332,
+        0.010985603754880523
+      ],
+      "tensor_kg_m2": [
+        [
+          9.658017200794752e-06,
+          1.4052515877947173e-07,
+          -8.363375569453425e-09
+        ],
+        [
+          1.4052515877947173e-07,
+          5.123030916536112e-06,
+          1.3327223453642864e-06
+        ],
+        [
+          -8.363375569453425e-09,
+          1.3327223453642864e-06,
+          1.2732840906780016e-05
+        ]
+      ]
+    },
+    "gripper_link2": {
+      "source": "ppscout_ws-dev/src/ppscout_description/urdf/piper_with_gripper_scout.xacro",
+      "mass_kg": 0.025,
+      "source_com_m": [
+        0.00065123185041968,
+        -0.0491929869131989,
+        0.00972258769184025
+      ],
+      "source_tensor_kg_m2": [
+        [
+          7.371e-05,
+          -1.13e-06,
+          2.1e-07
+        ],
+        [
+          -1.13e-06,
+          7.81e-06,
+          -1.372e-05
+        ],
+        [
+          2.1e-07,
+          -1.372e-05,
+          7.47e-05
+        ]
+      ],
+      "mesh_bounds_m": [
+        [
+          -0.02800000086426735,
+          -0.07649999856948853,
+          -7.668707189954216e-19
+        ],
+        [
+          0.02800000086426735,
+          2.7755575615628914e-17,
+          0.026499999687075615
+        ]
+      ],
+      "source_variance_m2": [
+        0.00017599999999999994,
+        0.002812,
+        0.00013639999999999985
+      ],
+      "variance_bound_m2": [
+        0.0007835759454759713,
+        0.0013433134670464261,
+        0.00016311985936580834
+      ],
+      "rejection_reasons": [
+        "COM variance exceeds mesh support bound"
+      ],
+      "method": "uniform-density convex hull at source mass",
+      "com_m": [
+        0.000255555097549967,
+        -0.04862562249031332,
+        0.010985603754880523
+      ],
+      "tensor_kg_m2": [
+        [
+          9.658017200794752e-06,
+          1.4052515877947195e-07,
+          -8.363375569453364e-09
+        ],
+        [
+          1.4052515877947195e-07,
+          5.123030916536112e-06,
+          1.3327223453642864e-06
+        ],
+        [
+          -8.363375569453364e-09,
+          1.3327223453642864e-06,
+          1.2732840906780016e-05
+        ]
+      ]
+    }
+  },
+  "mount": {
+    "xyz": [
+      0.0,
+      0.0,
+      0.054
+    ],
+    "rpy": [
+      0,
+      0,
+      0
+    ],
+    "piper_base_bounds_m": [
+      [
+        -0.05849998816847801,
+        -0.039999961853027344,
+        0.0
+      ],
+      [
+        0.039999961853027344,
+        0.039999961853027344,
+        0.08599995821714401
+      ]
+    ],
+    "deck_grid": [
+      11,
+      11
+    ],
+    "deck_z_range_m": [
+      0.05399895577834209,
+      0.05399931758994058
+    ],
+    "min_clearance_m": 6.824100594188254e-07,
+    "conservative_deck_z_max_m": 0.05399968806058434
+  },
+  "wheel_collision": {
+    "pos": [
+      -7.5511634349823e-06,
+      -0.0010184310376644135,
+      0.03963834489695728
+    ],
+    "radius": 0.08002389100433617,
+    "halfwidth": 0.04185630683787167
+  },
+  "initial_base_height_m": 0.1820406213880245,
+  "home_arm_rad": [
+    0.0,
+    0.7,
+    -1.4,
+    0.0,
+    0.7,
+    0.0
+  ],
+  "gripper_reduction": {
+    "opening_m": "2*q1 = -2*q2",
+    "removed_virtual_mass_kg": 0.001,
+    "finger_damping_Ns_per_m": 1.0,
+    "finger_friction_N": 0.05,
+    "method": "equal power-preserving split of source virtual opening joint damping 0.5 and friction 0.05"
+  }
+}
