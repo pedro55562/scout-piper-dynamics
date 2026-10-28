@@ -17,7 +17,7 @@ from pathlib import Path
 import collada
 import numpy as np
 import trimesh
-from arm_dynamics import configure_arm_dynamics
+from arm_dynamics import configure_arm_dynamics, configure_wheel_motors
 from scipy.spatial.transform import Rotation
 from upstream import CACHE, ensure_sources
 
@@ -736,6 +736,9 @@ def build(fetch=False):
             "profile": config["arm"]["torque_profile"],
         }
     manifest["arm_dynamics"] = configure_arm_dynamics(root, params)
+    manifest["wheel_dynamics"] = configure_wheel_motors(
+        root, config["scout"]["torque_limits_Nm"]
+    )
     manifest["initial_base_height_m"] = base_height
     manifest["home_arm_rad"] = HOME_ARM
     manifest["wheel_frames"] = {

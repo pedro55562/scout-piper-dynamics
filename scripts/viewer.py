@@ -9,6 +9,11 @@ from pathlib import Path
 
 import mujoco
 
+if __package__:
+    from .scout_piper_sim import ScoutPiperSim
+else:
+    from scout_piper_sim import ScoutPiperSim
+
 MODEL_PATH = Path(__file__).resolve().parents[1] / "models/scout_piper/scene.xml"
 
 
@@ -44,19 +49,19 @@ def main():
     args = parser.parse_args()
     if args.steps < 0:
         parser.error("--steps must be nonnegative")
-    model, data = load_model()
+    sim = ScoutPiperSim()
+    model, data = sim._model, sim._data  # Only this viewer adapter needs the backend.
     print(
         f"Loaded {model.nbody - 1} robot bodies, {model.njnt} joints, "
         f"nq={model.nq}, nv={model.nv}, {model.neq} gripper equality."
     )
     print("Joints: " + ", ".join(model.joint(i).name for i in range(model.njnt)))
     print(
-        "Six Piper motor inputs are joint-side torques in N·m (gear=1); initial commands are zero."
+        "Ten motor inputs are joint-side torques in N·m (gear=1); initial commands are zero."
     )
     if args.headless:
-        for _ in range(args.steps):
-            data.ctrl[:] = 0
-            mujoco.mj_step(model, data)
+        sim.zero_torques()
+        sim.step(n=args.steps)
         if not all(
             math.isfinite(float(x)) for x in [*data.qpos, *data.qvel, *data.qacc]
         ):
@@ -71,8 +76,6 @@ def main():
             f"base z={data.qpos[2]:.4f} m, warnings={warnings}."
         )
         return
-
-    from mujoco import viewer as mj_viewer
 
     running = threading.Event()
     reset = threading.Event()
@@ -96,7 +99,7 @@ def main():
         "The Control panel can apply manual torques; run scripts/zero_torque.py for a guaranteed zero-input test."
     )
     existing_threads = set(threading.enumerate())
-    with mj_viewer.launch_passive(model, data, key_callback=key_callback) as viewer:
+    with sim.launch_viewer(key_callback=key_callback) as viewer:
         viewer.cam.lookat[:] = [0, 0, 0.43]
         viewer.cam.distance = 1.65
         viewer.cam.azimuth = 135
@@ -107,13 +110,13 @@ def main():
             start = time.monotonic()
             with viewer.lock():
                 if reset.is_set():
-                    mujoco.mj_resetDataKeyframe(model, data, model.key("home").id)
+                    sim.reset()
                     reset.clear()
                 if running.is_set():
-                    mujoco.mj_step(model, data)
+                    sim.step()
                 else:
                     # Updates transforms when joint sliders change in the paused viewer.
-                    mujoco.mj_forward(model, data)
+                    sim._refresh()
             viewer.sync()
             interval = model.opt.timestep if running.is_set() else 1 / 60
             time.sleep(max(0, interval - (time.monotonic() - start)))

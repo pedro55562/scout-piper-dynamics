@@ -19,7 +19,15 @@
     "source_urdf_wheelbase_m": 0.463951,
     "source_urdf_joint_track_m": 0.416503,
     "source_urdf_wheel_z_m": -0.100998,
-    "placement_method": "manufacturer manual wheelbase and tire-center track; retain source URDF vertical stance; do not scale meshes"
+    "placement_method": "manufacturer manual wheelbase and tire-center track; retain source URDF vertical stance; do not scale meshes",
+    "torque_limits_Nm": [
+      5.0,
+      5.0,
+      5.0,
+      5.0
+    ],
+    "torque_limit_class": 4,
+    "torque_limit_basis": "Configurable +/-5 N*m software bound, not a manufacturer motor rating; no verified maximum wheel torque available; not inferred from motor power."
   },
   "arm": {
     "torque_profile": "standard Piper / pyAgxArm PiperFW.DEFAULT command envelope, not continuous motor rating",

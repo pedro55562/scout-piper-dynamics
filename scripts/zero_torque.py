@@ -1,5 +1,5 @@
 #!/usr/bin/env python3
-"""Run the free robot under gravity with all six torque commands held at zero."""
+"""Run the free robot under gravity with all ten torque commands held at zero."""
 
 import argparse
 

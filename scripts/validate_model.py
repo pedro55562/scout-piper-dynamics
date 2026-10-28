@@ -13,7 +13,7 @@ from pathlib import Path
 
 import mujoco
 import numpy as np
-from arm_dynamics import configure_arm_dynamics
+from arm_dynamics import configure_arm_dynamics, configure_wheel_motors
 
 ROOT = Path(__file__).resolve().parents[1]
 MODEL_DIR = ROOT / "models/scout_piper"
@@ -91,7 +91,7 @@ class ModelChecks(unittest.TestCase):
         )
         self.assertEqual(
             (m.nbody, m.njnt, m.nq, m.nv, m.neq, m.nu, m.nsensor),
-            (17, 13, 19, 18, 1, 6, 0),
+            (17, 13, 19, 18, 1, 10, 0),
         )
         self.assertEqual(m.joint("floating_base").type, mujoco.mjtJoint.mjJNT_FREE)
         for name in WHEELS + ARM:
@@ -108,12 +108,15 @@ class ModelChecks(unittest.TestCase):
     def test_direct_torque_actuators(self):
         m, d = self.model, self.data
         xml = ET.parse(MODEL_PATH).getroot()
-        self.assertEqual([a.tag for a in xml.find("actuator")], ["motor"] * 6)
+        self.assertEqual([a.tag for a in xml.find("actuator")], ["motor"] * 10)
         ET.indent(xml, space="  ")
         before = ET.tostring(xml)
         configure_arm_dynamics(
             xml,
             {name: MANIFEST["arm_dynamics"]["joints"][name]["source"] for name in ARM},
+        )
+        configure_wheel_motors(
+            xml, MANIFEST["assumptions"]["scout"]["torque_limits_Nm"]
         )
         ET.indent(xml, space="  ")
         self.assertEqual(
@@ -123,7 +126,7 @@ class ModelChecks(unittest.TestCase):
         )
         self.assertEqual(m.na, 0, "Torque motors must have no activation dynamics")
         np.testing.assert_array_equal(m.actuator_biasprm, 0)
-        for name in ARM:
+        for name in ARM + WHEELS:
             actuator = m.actuator(f"{name}_motor")
             joint = m.joint(name)
             dof = joint.dofadr[0]
@@ -137,9 +140,11 @@ class ModelChecks(unittest.TestCase):
                 actuator.gainprm, [1, 0, 0, 0, 0, 0, 0, 0, 0, 0]
             )
             self.assertTrue(actuator.ctrllimited[0])
-            limit = MANIFEST["arm_dynamics"]["joints"][name]["source"][
-                "command_limit_Nm"
-            ]
+            limit = (
+                MANIFEST["arm_dynamics"]["joints"][name]["source"]["command_limit_Nm"]
+                if name in ARM
+                else MANIFEST["wheel_dynamics"]["joints"][name]["ctrlrange_Nm"][1]
+            )
             np.testing.assert_array_equal(actuator.ctrlrange, [-limit, limit])
             # Verify sign, units, isolation and saturation using generalized force, not just XML.
             for command in [-2 * limit, -1.75, 1.75, 2 * limit]:

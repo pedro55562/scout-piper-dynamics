@@ -2537,7 +2537,15 @@
       "source_urdf_wheelbase_m": 0.463951,
       "source_urdf_joint_track_m": 0.416503,
       "source_urdf_wheel_z_m": -0.100998,
-      "placement_method": "manufacturer manual wheelbase and tire-center track; retain source URDF vertical stance; do not scale meshes"
+      "placement_method": "manufacturer manual wheelbase and tire-center track; retain source URDF vertical stance; do not scale meshes",
+      "torque_limits_Nm": [
+        5.0,
+        5.0,
+        5.0,
+        5.0
+      ],
+      "torque_limit_class": 4,
+      "torque_limit_basis": "Configurable +/-5 N*m software bound, not a manufacturer motor rating; no verified maximum wheel torque available; not inferred from motor power."
     },
     "arm": {
       "torque_profile": "standard Piper / pyAgxArm PiperFW.DEFAULT command envelope, not continuous motor rating",
@@ -2878,6 +2886,49 @@
         "frictionloss_Nm": 0.0,
         "stiffness_Nm_per_rad": 0.0,
         "armature_kg_m2": 0.0
+      }
+    }
+  },
+  "wheel_dynamics": {
+    "description": "Configurable software bounds; manufacturer maximum wheel torque unavailable; not inferred from power.",
+    "limit_class": 4,
+    "positive_direction": "forward rolling",
+    "joints": {
+      "front_left_wheel": {
+        "actuator": "front_left_wheel_motor",
+        "gear": 1.0,
+        "command_unit": "N*m",
+        "ctrlrange_Nm": [
+          -5.0,
+          5.0
+        ]
+      },
+      "front_right_wheel": {
+        "actuator": "front_right_wheel_motor",
+        "gear": 1.0,
+        "command_unit": "N*m",
+        "ctrlrange_Nm": [
+          -5.0,
+          5.0
+        ]
+      },
+      "rear_left_wheel": {
+        "actuator": "rear_left_wheel_motor",
+        "gear": 1.0,
+        "command_unit": "N*m",
+        "ctrlrange_Nm": [
+          -5.0,
+          5.0
+        ]
+      },
+      "rear_right_wheel": {
+        "actuator": "rear_right_wheel_motor",
+        "gear": 1.0,
+        "command_unit": "N*m",
+        "ctrlrange_Nm": [
+          -5.0,
+          5.0
+        ]
       }
     }
   },

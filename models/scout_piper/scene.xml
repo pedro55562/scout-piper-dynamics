@@ -201,8 +201,12 @@
     <motor name="joint4_motor" joint="joint4" gear="1" ctrllimited="true" ctrlrange="-6.506016 6.506016" />
     <motor name="joint5_motor" joint="joint5" gear="1" ctrllimited="true" ctrlrange="-6.506016 6.506016" />
     <motor name="joint6_motor" joint="joint6" gear="1" ctrllimited="true" ctrlrange="-6.506016 6.506016" />
+    <motor name="front_left_wheel_motor" joint="front_left_wheel" gear="1" ctrllimited="true" ctrlrange="-5 5" />
+    <motor name="front_right_wheel_motor" joint="front_right_wheel" gear="1" ctrllimited="true" ctrlrange="-5 5" />
+    <motor name="rear_left_wheel_motor" joint="rear_left_wheel" gear="1" ctrllimited="true" ctrlrange="-5 5" />
+    <motor name="rear_right_wheel_motor" joint="rear_right_wheel" gear="1" ctrllimited="true" ctrlrange="-5 5" />
   </actuator>
   <keyframe>
-    <key name="home" qpos="0 0 0.181998 1 0 0 0 0 0 0 0 0 0.7 -1.4 0 0.7 0 0.02 -0.02" ctrl="0 0 0 0 0 0" />
+    <key name="home" qpos="0 0 0.181998 1 0 0 0 0 0 0 0 0 0.7 -1.4 0 0.7 0 0.02 -0.02" ctrl="0 0 0 0 0 0 0 0 0 0" />
   </keyframe>
 </mujoco>
