@@ -208,6 +208,7 @@ tempCodeRunnerFile.py
 # MuJoCo writes graphics/solver diagnostics here.
 MUJOCO_LOG.TXT
 MJMODEL.TXT
+artifacts/
 
 # Ruff stuff:
 .ruff_cache/
