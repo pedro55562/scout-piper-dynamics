@@ -1,5 +1,67 @@
 # Scout Mini + Piper in MuJoCo
 
+## Scout Mini + Piper assembly in uaibot
+
+`scripts/scout_piper_uaibot.py` provides `create_scout_mini()` and
+`create_scout_piper()` using the existing visual assets. The combined model
+carries the Piper on the Scout's deck with the pinned mounting transform.
+It provides open-loop planar kinematics driven by prescribed `[v, w]` commands;
+it does not run a controller or change the existing Piper tracking controller.
+
+```bash
+source .venv/bin/activate
+python scripts/view_scout_piper_uaibot.py
+```
+
+The viewer opens `http://127.0.0.1:8002/artifacts/scout_piper_uaibot.html`.
+It demonstrates straight motion, a curve, an in-place turn and reverse using
+predefined velocities, while the arm joints remain fixed relative to the Scout.
+World, Scout and TCP frames are visible. DH and collision shapes are hidden.
+Use `--static` for a stationary preview, `--no-open` to serve without opening
+a browser, or `--export-only` to export the HTML and stop the asset server.
+`--port` and `--dt` set the local server port and animation step (default 40 ms).
+The meshes are served locally; the viewer's JavaScript dependencies use CDNs.
+
+```python
+import uaibot as ub
+from scripts.scout_piper_uaibot import create_scout_piper
+
+model = create_scout_piper(base_q=[0, 0, 0])  # world x, y, yaw
+sim = ub.Simulation(show_world_frame=True)
+model.add_to_simulation(sim)
+model.set_velocity(v=0.15, w=0.2)  # forward m/s, counterclockwise rad/s
+for _ in range(100):
+    model.step(0.02)              # holds arm joints fixed; updates all frames
+
+base_q = model.scout.base_q       # independent [x, y, yaw] snapshot
+wheel_q = model.scout.wheel_q     # front-left/right, rear-left/right angles
+arm_q = model.arm_q               # six URDF angles, without DH offsets
+tcp = model.piper.robot.fkm()     # actual world TCP pose
+```
+
+`set_velocity` persists until changed. `step` integrates the exact constant
+`v,w` arc in SE(2), including the straight-motion limit. Optional
+`model.step(dt, arm_q=...)` prescribes a new arm configuration directly.
+`reset(base_q=..., arm_q=..., wheel_q=...)` resets animations and time, clears
+the velocity command and preserves current arm angles when omitted.
+Use the assembly's methods to keep its geometry synchronized.
+
+The existing scene supplies the Scout base height (181.998 mm), deck mounting
+offset (54.01 mm), wheel axes and positions. Piper base height is therefore
+236.008 mm above the nominal ground. Wheel radius is 80 mm and tire-center
+track is 490 mm; the latter includes the tire offset from the URDF joint frame.
+Wheel angles follow ideal left/right differential speeds for visualization.
+This model has no tire slip, suspension, contact dynamics or collision response.
+One chassis Box and four wheel Cylinders are available in
+`model.scout.collision_objects`, synchronized with the moving chassis; the
+Piper retains its existing collision primitives. They can be displayed with
+`model.add_to_simulation(sim, show_collision=True)` or queried individually.
+They are not automatically registered as new links in the Piper's `Robot`.
+
+Validation: `python -m unittest tests.test_scout_piper_uaibot -v` checks
+forward/reverse travel, exact arcs, wheel signs, mounting/TCP transformations,
+collision alignment, reset behavior and the arm posture during the demo.
+
 ## Piper in uaibot
 
 The project-local factory in `scripts/piper_uaibot.py` builds the standard
